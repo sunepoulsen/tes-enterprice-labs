@@ -1,0 +1,33 @@
+sonar {
+    properties {
+        property 'sonar.sources', 'src'
+        property 'sonar.tests', 'src'
+        property 'sonar.test.inclusions', 'src/test/**/*.*, src/main/webapp/app/**/*.spec.ts'
+        property 'sonar.javascript.lcov.reportPaths', 'coverage/lcov.info'
+    }
+}
+
+tasks.register('clean') {
+    doLast {
+        exec {
+            commandLine 'rm', '-rf', 'dist'
+        }
+        exec {
+            commandLine 'rm', '-rf', 'node_modules'
+        }
+        exec {
+            commandLine 'rm', '-rf', 'coverage'
+        }
+    }
+}
+
+tasks.register('buildImage') {
+    doLast {
+        exec {
+            commandLine 'npm', 'run', 'build'
+        }
+        exec {
+            commandLine 'docker/build-image.sh', project.property('tel-web.docker.image.name'), "$version"
+        }
+    }
+}

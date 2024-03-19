@@ -1,0 +1,17 @@
+version: "2"
+services:
+  tel-testdata-module:
+    image: tel-testdata-module:1.0.0-SNAPSHOT
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+      - JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,address=8000,suspend=n,server=y
+    ports:
+      - "29180:8080"
+      - "29110:9010"
+    volumes:
+      - "./config/tel-testdata-local.properties:/app/resources/application-local.properties"
+
+  tel-web-module:
+    image: tel-web-module:1.0.0-SNAPSHOT
+    ports:
+      - "29280:8080"

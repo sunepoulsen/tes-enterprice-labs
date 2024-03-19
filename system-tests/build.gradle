@@ -1,0 +1,45 @@
+plugins {
+    id 'java'
+    id 'groovy'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+dependencies {
+    // Tech Easy Solutions
+    testImplementation 'dk.sunepoulsen.tes-foundation:tes-rest-models:1.0.1-SNAPSHOT'
+    testImplementation 'dk.sunepoulsen.tes-foundation:tes-docker-containers:1.0.1-SNAPSHOT'
+    testImplementation 'dk.sunepoulsen.tes-foundation:tes-selenium:1.0.1-SNAPSHOT'
+
+    // Lombok
+    testCompileOnly 'org.projectlombok:lombok:1.18.30'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    // Logging
+    testImplementation 'ch.qos.logback:logback-classic:1.4.14'
+    testImplementation 'org.slf4j:log4j-over-slf4j:2.0.9'
+
+    testImplementation platform('org.testcontainers:testcontainers-bom:1.19.3')
+    testImplementation 'org.testcontainers:testcontainers'
+
+    // Spock
+    testImplementation 'org.apache.groovy:groovy-all:4.0.16'
+    testImplementation 'org.spockframework:spock-core:2.3-groovy-4.0'
+    testImplementation 'net.bytebuddy:byte-buddy:1.14.10'
+    testImplementation 'org.objenesis:objenesis:3.3'
+}
+
+test {
+    useJUnitPlatform()
+
+    onlyIf {
+        project.hasProperty('system-tests')
+    }
+}
+
+apply from: "${rootProject.projectDir}/gradle/resources.gradle"
+apply from: "${rootProject.projectDir}/gradle/sonarqube-java.gradle"

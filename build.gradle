@@ -1,0 +1,84 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.owasp:dependency-check-gradle:9.0.3'
+    }
+}
+
+plugins {
+    id 'org.jetbrains.changelog'
+    id 'net.researchgate.release'
+    id 'org.sonarqube'
+}
+
+apply plugin: 'org.owasp.dependencycheck'
+
+def CHANGELOG_PROJECTS = [
+    'tel-testdata',
+    'tel-web'
+]
+
+tasks.register('allWrappers', Wrapper) {
+    gradleVersion = "${project.property('gradle.version')}"
+}
+
+apply from: "${rootProject.projectDir}/gradle/changelog.gradle"
+
+tasks.register('updateChangelogs') {
+    subprojects.findAll {
+        CHANGELOG_PROJECTS.contains(it.name)
+    }.each {
+        dependsOn("${it.name}:patchChangelog")
+    }
+
+    dependsOn('patchChangelog')
+}
+
+release {
+    tagTemplate = 'v${version}'
+    git {
+        requireBranch.set('main')
+    }
+}
+tasks.afterReleaseBuild.dependsOn tasks.updateChangelogs
+
+subprojects {
+    group 'dk.sunepoulsen.cibar'
+    version "${project.property('version')}"
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+
+        maven {
+            url "${System.properties['maven.repository.base.url']}/${System.properties['maven.repository.snapshots']}"
+            allowInsecureProtocol = true
+        }
+        maven {
+            url "${System.properties['maven.repository.base.url']}/${System.properties['maven.repository.releases']}"
+            allowInsecureProtocol = true
+        }
+    }
+
+}
+
+dependencyCheck {
+    format='ALL'
+}
+
+sonar {
+    properties {
+        property "sonar.projectName", "TES Enterprise Labs"
+        property "sonar.projectKey", "tel"
+
+        property 'sonar.dependencyCheck.severity.blocker', '9.0'
+        property 'sonar.dependencyCheck.severity.critical', '7.0'
+        property 'sonar.dependencyCheck.severity.major', '4.0'
+        property 'sonar.dependencyCheck.severity.minor', '0.0'
+
+        property 'sonar.dependencyCheck.jsonReportPath', "build/reports/dependency-check-report.json"
+        property 'sonar.dependencyCheck.htmlReportPath', "build/reports/dependency-check-report.html"
+    }
+}
