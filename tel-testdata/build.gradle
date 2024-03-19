@@ -1,0 +1,41 @@
+plugins {
+    id 'org.jetbrains.changelog'
+}
+
+apply from: "${rootProject.projectDir}/gradle/changelog.gradle"
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'groovy'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+
+    dependencies {
+        // Lombok
+        compileOnly 'org.projectlombok:lombok:1.18.30'
+        annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+        // Logging
+        implementation 'ch.qos.logback:logback-core:1.4.14'
+        implementation 'ch.qos.logback:logback-classic:1.4.14'
+        implementation 'org.slf4j:log4j-over-slf4j:2.0.9'
+
+        // Spock
+        testImplementation 'org.apache.groovy:groovy-all:4.0.16'
+        testImplementation 'org.spockframework:spock-core:2.3-groovy-4.0'
+        testImplementation 'net.bytebuddy:byte-buddy:1.14.10'
+        testImplementation 'org.objenesis:objenesis:3.3'
+    }
+
+    apply from: "${rootProject.projectDir}/gradle/resources.gradle"
+
+    test {
+        useJUnitPlatform()
+    }
+
+    apply from: "${rootProject.projectDir}/gradle/sonarqube-java.gradle"
+}

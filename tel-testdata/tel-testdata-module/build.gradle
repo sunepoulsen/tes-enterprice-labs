@@ -1,0 +1,57 @@
+import org.apache.tools.ant.filters.*
+
+plugins {
+    id 'groovy'
+    id 'java'
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+    id 'jacoco'
+    id 'com.google.cloud.tools.jib'
+}
+
+dependencies {
+    // Tech Easy Solutions
+    implementation 'dk.sunepoulsen.tes-foundation:tes-spring-boot-backend-logging:1.0.1-SNAPSHOT'
+    implementation 'dk.sunepoulsen.tes-foundation:tes-rest-models:1.0.1-SNAPSHOT'
+    implementation 'dk.sunepoulsen.tes-foundation:tes-spring-boot-rest-logic:1.0.1-SNAPSHOT'
+
+    // Spring Boot
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation 'org.springframework.boot:spring-boot-starter-tomcat'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+}
+
+jib {
+    from {
+        image = 'eclipse-temurin:21-jre'
+    }
+    to {
+        image = project.property('tel-testdata.docker.image.name')
+        tags = [project.property('version')]
+    }
+
+    container {
+        jvmFlags = [
+                '-Dcom.sun.management.jmxremote',
+                '-Dcom.sun.management.jmxremote.port=9010',
+                '-Dcom.sun.management.jmxremote.local.only=false',
+                '-Dcom.sun.management.jmxremote.authenticate=false',
+                '-Dcom.sun.management.jmxremote.ssl=false'
+            ]
+        ports = ['8080', '9010']
+    }
+}
+
+javadoc {
+    options.memberLevel = JavadocMemberLevel.PRIVATE
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+    }
+}
+
+tasks.build.dependsOn tasks.jibDockerBuild

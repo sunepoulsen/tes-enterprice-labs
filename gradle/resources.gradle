@@ -1,0 +1,15 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+def resourceProperties = [
+    version: project.property('version').toString(),
+    telTestDataDockerImageName: project.property('tel-testdata.docker.image.name').toString(),
+    telWebDockerImageName: project.property('tel-web.docker.image.name').toString()
+]
+
+processResources {
+    filter(ReplaceTokens, tokens: resourceProperties)
+}
+
+processTestResources {
+    filter(ReplaceTokens, tokens: resourceProperties)
+}
