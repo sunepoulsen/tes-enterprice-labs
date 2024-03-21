@@ -9,7 +9,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'tes-enterprice-labs'
+rootProject.name = 'tes-enterprise-labs'
 
 include 'tel-testdata'
 include 'tel-testdata:tel-testdata-module'
