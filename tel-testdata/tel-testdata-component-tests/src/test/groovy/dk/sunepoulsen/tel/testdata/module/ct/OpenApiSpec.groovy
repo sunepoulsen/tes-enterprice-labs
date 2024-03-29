@@ -12,7 +12,7 @@ class OpenApiSpec extends Specification {
     private OpenApiVerifier openApiVerifier
 
     void setup() {
-        openApiVerifier = new OpenApiVerifier(webDriver, new URI(DeploymentSpockExtension.storeBackendBaseUrl()))
+        openApiVerifier = new OpenApiVerifier(webDriver, DeploymentSpockExtension.telTestDataBackendContainer().baseUrl())
     }
 
     void setupSpec() {

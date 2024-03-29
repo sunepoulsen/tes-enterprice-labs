@@ -1,16 +1,20 @@
 package dk.sunepoulsen.tel.testdata.module.ct
 
+import dk.sunepoulsen.tes.docker.containers.ClasspathPropertiesDockerImageProvider
+import dk.sunepoulsen.tes.docker.containers.DockerImageProvider
 import dk.sunepoulsen.tes.docker.containers.TESBackendContainer
+import dk.sunepoulsen.tes.docker.containers.TESContainerSecureProtocol
 import dk.sunepoulsen.tes.rest.integrations.TechEasySolutionsBackendIntegrator
 import groovy.util.logging.Slf4j
-import org.slf4j.bridge.SLF4JBridgeHandler
 import org.spockframework.runtime.extension.IGlobalExtension
 import org.spockframework.runtime.model.SpecInfo
 import org.testcontainers.containers.Network
+import org.testcontainers.utility.MountableFile
 
 @Slf4j
 class DeploymentSpockExtension implements IGlobalExtension {
     private static TESBackendContainer telTestDataBackendContainer = null
+    private DockerImageProvider dockerImageProvider = new ClasspathPropertiesDockerImageProvider('/deployment.properties', 'tel-testdata')
 
     static Properties loadDeploymentProperties() {
         Properties props = new Properties()
@@ -26,23 +30,12 @@ class DeploymentSpockExtension implements IGlobalExtension {
         return new TechEasySolutionsBackendIntegrator(telTestDataBackendContainer.createClient())
     }
 
-    static String storeBackendBaseUrl() {
-        return "http://${telTestDataBackendContainer.getHost()}:${telTestDataBackendContainer.getMappedPort(8080)}"
-    }
-
     @Override
     void start() {
-        SLF4JBridgeHandler.removeHandlersForRootLogger();
-        SLF4JBridgeHandler.install();
-        System.setProperty('jdk.httpclient.HttpClient.log', 'errors,requests,headers,content,frames,ssl,trace,channel')
-
-        Properties deploymentProperties = loadDeploymentProperties()
-        String imageName = deploymentProperties.getProperty('image.name')
-        String imageTag = deploymentProperties.getProperty('image.tag')
-
         Network network = Network.newNetwork()
 
-        telTestDataBackendContainer = new TESBackendContainer(imageName, imageTag, 'ct')
+        log.debug("Current directory: {}", new File(".").absolutePath)
+        telTestDataBackendContainer = new TESBackendContainer(dockerImageProvider, new TESContainerSecureProtocol(), 'ct')
             .withConfigMapping('application-ct.properties')
             .withNetwork(network)
         telTestDataBackendContainer.start()
