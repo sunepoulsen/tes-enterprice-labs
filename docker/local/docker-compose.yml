@@ -1,4 +1,3 @@
-version: "2"
 services:
   tel-testdata-module:
     image: tel-testdata-module:1.0.0-SNAPSHOT
@@ -10,6 +9,7 @@ services:
       - "29110:9010"
     volumes:
       - "./config/tel-testdata-local.properties:/app/resources/application-local.properties"
+      - "./../../certificates/tes-enterprise-labs.p12:/app/certificates/tes-enterprise-labs.p12"
 
   tel-web-module:
     image: tel-web-module:1.0.0-SNAPSHOT
