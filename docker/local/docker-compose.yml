@@ -14,4 +14,8 @@ services:
   tel-web-module:
     image: tel-web-module:1.0.0-SNAPSHOT
     ports:
-      - "29280:8080"
+      - "29280:443"
+    volumes:
+      - "./../../certificates/tes-enterprise-labs.pem:/var/lib/nginx/tes-enterprise-labs.pem:ro"
+      - "./../../certificates/tes-enterprise-labs.key:/var/lib/nginx/tes-enterprise-labs.key:ro"
+      - "./../../certificates/tes-enterprise-labs-password.txt:/var/lib/nginx/tes-enterprise-labs-passwords.txt:ro"
