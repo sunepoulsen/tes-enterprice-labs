@@ -8,6 +8,7 @@ import org.spockframework.runtime.model.SpecInfo
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.Network
 import org.testcontainers.containers.wait.strategy.Wait
+import org.testcontainers.utility.MountableFile
 
 @Slf4j
 class DeploymentSpockExtension implements IGlobalExtension {
@@ -22,20 +23,24 @@ class DeploymentSpockExtension implements IGlobalExtension {
     }
 
     static String frontendContainerBaseUrl() {
-        return "http://${telWebContainer.getHost()}:${telWebContainer.getMappedPort(8080)}"
+        return "https://${telWebContainer.getHost()}:${telWebContainer.getMappedPort(443)}"
     }
 
     @Override
     void start() {
         Network network = Network.newNetwork()
 
+        log.debug("Current directory: {}", new File(".").absolutePath)
         telWebContainer = new GenericContainer(this.dockerImageProvider.dockerImageName())
-            .withExposedPorts(new Integer[]{8080})
-            .waitingFor(Wait.forHttp("/").forStatusCode(200))
+            .withExposedPorts(new Integer[]{443})
+            .withCopyFileToContainer(MountableFile.forHostPath("../../certificates/tes-enterprise-labs.pem"), "/var/lib/nginx/tes-enterprise-labs.pem")
+            .withCopyFileToContainer(MountableFile.forHostPath("../../certificates/tes-enterprise-labs.key"), "/var/lib/nginx/tes-enterprise-labs.key")
+            .withCopyFileToContainer(MountableFile.forHostPath("../../certificates/tes-enterprise-labs-password.txt"), "/var/lib/nginx/tes-enterprise-labs-passwords.txt")
+            .waitingFor(Wait.forHttps("/").allowInsecure().forStatusCode(200))
             .withNetwork(network)
         telWebContainer.start()
 
-        log.info('TEL Web Module Exported Port: {}', telWebContainer.getMappedPort(8080))
+        log.info('TEL Web Module Exported Port: {}', telWebContainer.getMappedPort(443))
     }
 
     @Override
