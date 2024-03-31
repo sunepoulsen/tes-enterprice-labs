@@ -5,11 +5,17 @@ import dk.sunepoulsen.tes.docker.containers.DockerImageProvider
 import dk.sunepoulsen.tes.docker.containers.TESBackendContainer
 import dk.sunepoulsen.tes.docker.containers.TESContainerSecureProtocol
 import dk.sunepoulsen.tes.rest.integrations.TechEasySolutionsBackendIntegrator
+import dk.sunepoulsen.tes.rest.integrations.TechEasySolutionsClient
+import dk.sunepoulsen.tes.rest.integrations.config.DefaultClientConfig
+import dk.sunepoulsen.tes.rest.integrations.config.TechEasySolutionsClientConfig
+import dk.sunepoulsen.tes.security.net.ssl.SSLContextFactory
 import groovy.util.logging.Slf4j
 import org.spockframework.runtime.extension.IGlobalExtension
 import org.spockframework.runtime.model.SpecInfo
 import org.testcontainers.containers.Network
 import org.testcontainers.utility.MountableFile
+
+import javax.net.ssl.SSLContext
 
 @Slf4j
 class DeploymentSpockExtension implements IGlobalExtension {
@@ -27,7 +33,12 @@ class DeploymentSpockExtension implements IGlobalExtension {
     }
 
     static TechEasySolutionsBackendIntegrator telTestDataBackendIntegrator() {
-        return new TechEasySolutionsBackendIntegrator(telTestDataBackendContainer.createClient())
+        SSLContext sslContext = SSLContextFactory.createSSLContext(new File("../../certificates/tes-enterprise-labs.p12"), "99oUun9rAvFT7mk/kql696JcAcbM1vtGwtqgK1IFfYjEqG/YXDtOeedCd4v/t0wa")
+
+        TechEasySolutionsClientConfig clientConfig = new DefaultClientConfig(sslContext)
+        TechEasySolutionsClient client = telTestDataBackendContainer.createClient(clientConfig)
+
+        return new TechEasySolutionsBackendIntegrator(client)
     }
 
     @Override
@@ -37,6 +48,7 @@ class DeploymentSpockExtension implements IGlobalExtension {
         log.debug("Current directory: {}", new File(".").absolutePath)
         telTestDataBackendContainer = new TESBackendContainer(dockerImageProvider, new TESContainerSecureProtocol(), 'ct')
             .withConfigMapping('application-ct.properties')
+            .withCopyFileToContainer(MountableFile.forHostPath("../../certificates/tes-enterprise-labs.p12"), "/app/certificates/tes-enterprise-labs.p12")
             .withNetwork(network)
         telTestDataBackendContainer.start()
 
