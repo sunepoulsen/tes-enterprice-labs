@@ -64,6 +64,14 @@ subprojects {
 
 }
 
+tasks.register('makeCertificates') {
+    doLast {
+        exec {
+            commandLine "${rootDir.absolutePath}/scripts/make-tel-certificate.sh", "${project.rootDir.absolutePath}/build/certs"
+        }
+    }
+}
+
 dependencyCheck {
     format='ALL'
 }
