@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="LOG_FILE" value="build/logs/tel-testdata-module-component-tests.log"/>
+    <property name="LOG_FILE" value="build/logs/@projectName@.log"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>

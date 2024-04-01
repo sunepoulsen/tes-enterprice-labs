@@ -21,6 +21,7 @@ import javax.net.ssl.SSLContext
 class DeploymentSpockExtension implements IGlobalExtension {
     private static TESBackendContainer telTestDataBackendContainer = null
     private DockerImageProvider dockerImageProvider = new ClasspathPropertiesDockerImageProvider('/deployment.properties', 'tel-testdata')
+    private static Properties deploymentProperties = loadDeploymentProperties()
 
     static Properties loadDeploymentProperties() {
         Properties props = new Properties()
@@ -33,7 +34,7 @@ class DeploymentSpockExtension implements IGlobalExtension {
     }
 
     static TechEasySolutionsBackendIntegrator telTestDataBackendIntegrator() {
-        SSLContext sslContext = SSLContextFactory.createSSLContext(new File("../../certificates/tes-enterprise-labs.p12"), "99oUun9rAvFT7mk/kql696JcAcbM1vtGwtqgK1IFfYjEqG/YXDtOeedCd4v/t0wa")
+        SSLContext sslContext = SSLContextFactory.createSSLContext(new File(deploymentProperties.getProperty('ssl.key-store')), deploymentProperties.getProperty('ssl.key-store-password'))
 
         TechEasySolutionsClientConfig clientConfig = new DefaultClientConfig(sslContext)
         TechEasySolutionsClient client = telTestDataBackendContainer.createClient(clientConfig)
@@ -48,7 +49,7 @@ class DeploymentSpockExtension implements IGlobalExtension {
         log.debug("Current directory: {}", new File(".").absolutePath)
         telTestDataBackendContainer = new TESBackendContainer(dockerImageProvider, new TESContainerSecureProtocol(), 'ct')
             .withConfigMapping('application-ct.properties')
-            .withCopyFileToContainer(MountableFile.forHostPath("../../certificates/tes-enterprise-labs.p12"), "/app/certificates/tes-enterprise-labs.p12")
+            .withCopyFileToContainer(MountableFile.forHostPath(deploymentProperties.getProperty('ssl.key-store')), "/app/certificates/${deploymentProperties.getProperty('ssl.key-store.filename')}")
             .withNetwork(network)
         telTestDataBackendContainer.start()
 

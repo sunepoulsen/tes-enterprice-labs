@@ -13,6 +13,7 @@ def resourceProperties = [
     telTestDataDockerImageName: project.property('tel-testdata.docker.image.name').toString(),
     telWebDockerImageName: project.property('tel-web.docker.image.name').toString(),
     certificateFile: "${project.rootDir.absolutePath}/build/certs/tes-enterprise-labs.p12".toString(),
+    certificateFilename: 'tes-enterprise-labs.p12'.toString(),
     certificatePassword: certificatePassword.toString()
 ]
 
