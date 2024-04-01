@@ -1,24 +1,21 @@
 package dk.sunepoulsen.tel.web.module.ct
 
+import dk.sunepoulsen.tes.docker.containers.ClasspathPropertiesDockerImageProvider
+import dk.sunepoulsen.tes.docker.containers.DockerImageProvider
 import groovy.util.logging.Slf4j
 import org.spockframework.runtime.extension.IGlobalExtension
 import org.spockframework.runtime.model.SpecInfo
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.Network
 import org.testcontainers.containers.wait.strategy.Wait
-import org.testcontainers.utility.DockerImageName
+import org.testcontainers.utility.MountableFile
 
 @Slf4j
 class DeploymentSpockExtension implements IGlobalExtension {
     private static GenericContainer telWebContainer = null
-    private DockerImageName telWebDockerImageName
+    private DockerImageProvider dockerImageProvider = new ClasspathPropertiesDockerImageProvider('/deployment.properties', 'tel-web')
 
     DeploymentSpockExtension() {
-        Properties deploymentProperties = loadDeploymentProperties()
-        String frontendImageName = deploymentProperties.getProperty('image.name')
-        String frontendImageTag = deploymentProperties.getProperty('image.tag')
-
-        this.telWebDockerImageName = DockerImageName.parse(frontendImageName + ":" + frontendImageTag)
     }
 
     static GenericContainer frontendContainer() {
@@ -26,20 +23,24 @@ class DeploymentSpockExtension implements IGlobalExtension {
     }
 
     static String frontendContainerBaseUrl() {
-        return "http://${telWebContainer.getHost()}:${telWebContainer.getMappedPort(8080)}"
+        return "https://${telWebContainer.getHost()}:${telWebContainer.getMappedPort(443)}"
     }
 
     @Override
     void start() {
         Network network = Network.newNetwork()
 
-        telWebContainer = new GenericContainer(this.telWebDockerImageName)
-            .withExposedPorts(new Integer[]{8080})
-            .waitingFor(Wait.forHttp("/").forStatusCode(200))
+        log.debug("Current directory: {}", new File(".").absolutePath)
+        telWebContainer = new GenericContainer(this.dockerImageProvider.dockerImageName())
+            .withExposedPorts(new Integer[]{443})
+            .withCopyFileToContainer(MountableFile.forHostPath("../../certificates/tes-enterprise-labs.pem"), "/var/lib/nginx/tes-enterprise-labs.pem")
+            .withCopyFileToContainer(MountableFile.forHostPath("../../certificates/tes-enterprise-labs.key"), "/var/lib/nginx/tes-enterprise-labs.key")
+            .withCopyFileToContainer(MountableFile.forHostPath("../../certificates/tes-enterprise-labs-password.txt"), "/var/lib/nginx/tes-enterprise-labs-passwords.txt")
+            .waitingFor(Wait.forHttps("/").allowInsecure().forStatusCode(200))
             .withNetwork(network)
         telWebContainer.start()
 
-        log.info('ViDA DDR Reportings Web Exported Port: {}', telWebContainer.getMappedPort(8080))
+        log.info('TEL Web Module Exported Port: {}', telWebContainer.getMappedPort(443))
     }
 
     @Override
@@ -51,11 +52,5 @@ class DeploymentSpockExtension implements IGlobalExtension {
         telWebContainer.copyFileFromContainer('/var/log/nginx/access.log', 'build/logs/tel-web-module-access.log')
         telWebContainer.copyFileFromContainer('/var/log/nginx/error.log', 'build/logs/tel-web-module-error.log')
         telWebContainer.stop()
-    }
-
-    private static Properties loadDeploymentProperties() {
-        Properties props = new Properties()
-        props.load(DeploymentSpockExtension.class.getResourceAsStream('/deployment.properties') )
-        return props
     }
 }

@@ -1,4 +1,3 @@
-version: "2"
 services:
   tel-testdata-module:
     image: tel-testdata-module:1.0.0-SNAPSHOT
@@ -10,8 +9,13 @@ services:
       - "29110:9010"
     volumes:
       - "./config/tel-testdata-local.properties:/app/resources/application-local.properties"
+      - "./../../certificates/tes-enterprise-labs.p12:/app/certificates/tes-enterprise-labs.p12"
 
   tel-web-module:
     image: tel-web-module:1.0.0-SNAPSHOT
     ports:
-      - "29280:8080"
+      - "29280:443"
+    volumes:
+      - "./../../certificates/tes-enterprise-labs.pem:/var/lib/nginx/tes-enterprise-labs.pem:ro"
+      - "./../../certificates/tes-enterprise-labs.key:/var/lib/nginx/tes-enterprise-labs.key:ro"
+      - "./../../certificates/tes-enterprise-labs-password.txt:/var/lib/nginx/tes-enterprise-labs-passwords.txt:ro"

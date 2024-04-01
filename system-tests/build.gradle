@@ -13,6 +13,7 @@ dependencies {
     // Tech Easy Solutions
     testImplementation 'dk.sunepoulsen.tes-foundation:tes-rest-models:1.0.1-SNAPSHOT'
     testImplementation 'dk.sunepoulsen.tes-foundation:tes-docker-containers:1.0.1-SNAPSHOT'
+    testImplementation 'dk.sunepoulsen.tes-foundation:tes-security:1.0.1-SNAPSHOT'
     testImplementation 'dk.sunepoulsen.tes-foundation:tes-selenium:1.0.1-SNAPSHOT'
 
     // Lombok
