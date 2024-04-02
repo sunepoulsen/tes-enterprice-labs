@@ -1,0 +1,21 @@
+services:
+  @telTestDataDockerImageName@:
+    image: @telTestDataDockerImageName@:@version@
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+      - JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,address=8000,suspend=n,server=y
+    ports:
+      - "29180:8080"
+      - "29110:9010"
+    volumes:
+      - "./config/tel-testdata-local.properties:/app/resources/application-local.properties"
+      - "@certificateDirectory@/@certificateFilename@:/app/certificates/@certificateFilename@"
+
+  @telWebDockerImageName@:
+    image: @telWebDockerImageName@:@version@
+    ports:
+      - "29280:443"
+    volumes:
+      - "@certificateDirectory@/@certificatePemFilename@:/var/lib/nginx/@certificatePemFilename@:ro"
+      - "@certificateDirectory@/@certificateKeyFilename@:/var/lib/nginx/@certificateKeyFilename@:ro"
+      - "@certificateDirectory@/@certificatePasswordFilename@:/var/lib/nginx/tes-enterprise-labs-passwords.txt:ro"

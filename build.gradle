@@ -45,7 +45,7 @@ release {
 tasks.afterReleaseBuild.dependsOn tasks.updateChangelogs
 
 subprojects {
-    group 'dk.sunepoulsen.cibar'
+    group 'dk.sunepoulsen.tes-enterprise-labs'
     version "${project.property('version')}"
 
     repositories {
