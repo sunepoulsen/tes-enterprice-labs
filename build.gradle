@@ -45,7 +45,7 @@ release {
 tasks.afterReleaseBuild.dependsOn tasks.updateChangelogs
 
 subprojects {
-    group 'dk.sunepoulsen.cibar'
+    group 'dk.sunepoulsen.tes-enterprise-labs'
     version "${project.property('version')}"
 
     repositories {
@@ -62,6 +62,14 @@ subprojects {
         }
     }
 
+}
+
+tasks.register('makeCertificates') {
+    doLast {
+        exec {
+            commandLine "${rootDir.absolutePath}/scripts/make-tel-certificate.sh", "${project.rootDir.absolutePath}/build/certs"
+        }
+    }
 }
 
 dependencyCheck {

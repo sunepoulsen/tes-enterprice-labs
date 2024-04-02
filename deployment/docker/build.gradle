@@ -1,0 +1,61 @@
+apply from: "${rootProject.projectDir}/gradle/resources.gradle"
+
+def dockerComposeDir = "${project.projectDir.absolutePath}/build/resources/main/local".toString()
+def buildDir = "${project.projectDir.absolutePath}/build".toString()
+
+tasks.register('deploy') {
+    doLast {
+        exec {
+            workingDir "$buildDir"
+
+            logger.debug('Deleting log directory')
+            commandLine 'rm', '-rf', 'logs'
+        }
+        exec {
+            workingDir "$dockerComposeDir"
+            logger.debug('Start docker compose with profile {}', 'local')
+            commandLine 'docker', 'compose', 'up', '-d'
+        }
+        exec {
+            workingDir "$dockerComposeDir"
+            commandLine 'docker', 'compose', 'images'
+        }
+        exec {
+            workingDir "$dockerComposeDir"
+            commandLine 'docker', 'compose', 'ps'
+        }
+    }
+}
+
+tasks.register('undeploy') {
+    doLast {
+        exec {
+            workingDir "$buildDir"
+            logger.debug('Creating log directory')
+            commandLine 'mkdir', 'logs'
+        }
+        exec {
+            workingDir "$buildDir"
+            logger.debug('Copy access log file from tel-web-module container')
+            commandLine 'docker', 'cp', 'local-tel-web-module-1:/var/log/nginx/access.log', 'logs/tel-web-module-access.log'
+        }
+        exec {
+            workingDir "$buildDir"
+            logger.debug('Copy error log file from tel-web-module container')
+            commandLine 'docker', 'cp', 'local-tel-web-module-1:/var/log/nginx/error.log', 'logs/tel-web-module-error.log'
+        }
+        exec {
+            workingDir "$buildDir"
+            logger.debug('Copy log file from tel-testdata-module container')
+            commandLine 'docker', 'cp', 'local-tel-testdata-module-1:/app/logs/service.log', 'logs/tel-testdata-module.log'
+        }
+        exec {
+            workingDir "$dockerComposeDir"
+            logger.debug('Stop and delete all running containers')
+            commandLine 'docker', 'compose', 'down'
+        }
+    }
+}
+
+tasks.deploy.dependsOn tasks.processResources
+tasks.undeploy.dependsOn tasks.processResources

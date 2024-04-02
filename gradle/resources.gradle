@@ -1,9 +1,24 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
+def certificatePasswordFile = new File("${project.rootDir.absolutePath}/build/certs/tes-enterprise-labs-password.txt")
+def certificatePassword = 'null'
+if (certificatePasswordFile.exists()) {
+    certificatePassword = certificatePasswordFile.text
+}
+
 def resourceProperties = [
+    projectName: project.name.toString(),
+    projectBuildDir: "${project.projectDir.absolutePath}/build".toString(),
     version: project.property('version').toString(),
     telTestDataDockerImageName: project.property('tel-testdata.docker.image.name').toString(),
-    telWebDockerImageName: project.property('tel-web.docker.image.name').toString()
+    telWebDockerImageName: project.property('tel-web.docker.image.name').toString(),
+    certificateDirectory: "${project.rootDir.absolutePath}/build/certs".toString(),
+    certificateFile: "${project.rootDir.absolutePath}/build/certs/tes-enterprise-labs.p12".toString(),
+    certificateFilename: 'tes-enterprise-labs.p12'.toString(),
+    certificatePemFilename: 'tes-enterprise-labs.pem'.toString(),
+    certificateKeyFilename: 'tes-enterprise-labs.key'.toString(),
+    certificatePasswordFilename: 'tes-enterprise-labs-password.txt'.toString(),
+    certificatePassword: certificatePassword.toString()
 ]
 
 processResources {

@@ -14,6 +14,13 @@ import org.testcontainers.utility.MountableFile
 class DeploymentSpockExtension implements IGlobalExtension {
     private static GenericContainer telWebContainer = null
     private DockerImageProvider dockerImageProvider = new ClasspathPropertiesDockerImageProvider('/deployment.properties', 'tel-web')
+    private static Properties deploymentProperties = loadDeploymentProperties()
+
+    static Properties loadDeploymentProperties() {
+        Properties props = new Properties()
+        props.load(DeploymentSpockExtension.class.getResourceAsStream('/deployment.properties') )
+        return props
+    }
 
     DeploymentSpockExtension() {
     }
@@ -33,9 +40,9 @@ class DeploymentSpockExtension implements IGlobalExtension {
         log.debug("Current directory: {}", new File(".").absolutePath)
         telWebContainer = new GenericContainer(this.dockerImageProvider.dockerImageName())
             .withExposedPorts(new Integer[]{443})
-            .withCopyFileToContainer(MountableFile.forHostPath("../../certificates/tes-enterprise-labs.pem"), "/var/lib/nginx/tes-enterprise-labs.pem")
-            .withCopyFileToContainer(MountableFile.forHostPath("../../certificates/tes-enterprise-labs.key"), "/var/lib/nginx/tes-enterprise-labs.key")
-            .withCopyFileToContainer(MountableFile.forHostPath("../../certificates/tes-enterprise-labs-password.txt"), "/var/lib/nginx/tes-enterprise-labs-passwords.txt")
+            .withCopyFileToContainer(MountableFile.forHostPath(deploymentProperties.getProperty('certificate.pem.file')), "/var/lib/nginx/tes-enterprise-labs.pem")
+            .withCopyFileToContainer(MountableFile.forHostPath(deploymentProperties.getProperty('certificate.key.file')), "/var/lib/nginx/tes-enterprise-labs.key")
+            .withCopyFileToContainer(MountableFile.forHostPath(deploymentProperties.getProperty('certificate.passwords.file')), "/var/lib/nginx/tes-enterprise-labs-passwords.txt")
             .waitingFor(Wait.forHttps("/").allowInsecure().forStatusCode(200))
             .withNetwork(network)
         telWebContainer.start()

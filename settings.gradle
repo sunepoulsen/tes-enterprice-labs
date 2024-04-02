@@ -11,6 +11,8 @@ pluginManagement {
 
 rootProject.name = 'tes-enterprise-labs'
 
+include 'deployment'
+include 'deployment:docker'
 include 'tel-testdata'
 include 'tel-testdata:tel-testdata-module'
 include 'tel-testdata:tel-testdata-component-tests'
