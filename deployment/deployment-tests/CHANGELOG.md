@@ -17,10 +17,6 @@ For release-dates, use date-format: YYYY-MM-DD
 
 ### Features
 
-- [TESENTLABS-2](https://sunepoulsen.atlassian.net/browse/TESENTLABS-2): Create testdata backend service
-- [TESENTLABS-3](https://sunepoulsen.atlassian.net/browse/TESENTLABS-3): Create frontend web skeleton
-- [TESENTLABS-4](https://sunepoulsen.atlassian.net/browse/TESENTLABS-4): Create Docker Compose deployment
-- [TESENTLABS-17](https://sunepoulsen.atlassian.net/browse/TESENTLABS-17): Autogenerate certificates with Gradle on execution
 - [TESENTLABS-24](https://sunepoulsen.atlassian.net/browse/TESENTLABS-24): Create a deployment test
 
 ### Fixed
