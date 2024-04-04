@@ -31,4 +31,7 @@ echo
 ./pipeline-run-system-tests.sh
 
 echo
+./pipeline-deployment-tests.sh
+
+echo
 ./pipeline-analyze.sh

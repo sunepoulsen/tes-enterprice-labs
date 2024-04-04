@@ -20,3 +20,6 @@ include 'tel-web'
 include 'tel-web:tel-web-module'
 include 'tel-web:tel-web-component-tests'
 include 'system-tests'
+include 'deployment:deployment-tests'
+findProject(':deployment:deployment-tests')?.name = 'deployment-tests'
+
