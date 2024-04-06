@@ -3,6 +3,8 @@ plugins {
 }
 
 dependencies {
+    testImplementation project(':tel-testdata:tel-testdata-integrations')
+
     // Tech Easy Solutions
     testImplementation 'dk.sunepoulsen.tes-foundation:tes-rest-models:1.0.1-SNAPSHOT'
     testImplementation 'dk.sunepoulsen.tes-foundation:tes-rest-integrations:1.0.1-SNAPSHOT'

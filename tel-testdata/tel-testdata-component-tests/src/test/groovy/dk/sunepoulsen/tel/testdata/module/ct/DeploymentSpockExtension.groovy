@@ -1,5 +1,6 @@
 package dk.sunepoulsen.tel.testdata.module.ct
 
+import dk.sunepoulsen.tel.testdata.module.integrator.TelTestDataIntegrator
 import dk.sunepoulsen.tes.docker.containers.ClasspathPropertiesDockerImageProvider
 import dk.sunepoulsen.tes.docker.containers.DockerImageProvider
 import dk.sunepoulsen.tes.docker.containers.TESBackendContainer
@@ -33,13 +34,13 @@ class DeploymentSpockExtension implements IGlobalExtension {
         return telTestDataBackendContainer
     }
 
-    static TechEasySolutionsBackendIntegrator telTestDataBackendIntegrator() {
+    static TelTestDataIntegrator telTestDataBackendIntegrator() {
         SSLContext sslContext = SSLContextFactory.createSSLContext(new File(deploymentProperties.getProperty('ssl.key-store')), deploymentProperties.getProperty('ssl.key-store-password'))
 
         TechEasySolutionsClientConfig clientConfig = new DefaultClientConfig(sslContext)
         TechEasySolutionsClient client = telTestDataBackendContainer.createClient(clientConfig)
 
-        return new TechEasySolutionsBackendIntegrator(client)
+        return new TelTestDataIntegrator(client)
     }
 
     @Override
