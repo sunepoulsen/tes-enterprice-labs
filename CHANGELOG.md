@@ -28,4 +28,7 @@ For release-dates, use date-format: YYYY-MM-DD
 
 ### Development
 
+- [TESENTLABS-27](https://sunepoulsen.atlassian.net/browse/TESENTLABS-27): Manage data sets in tel-testdata
+  - Upgrade to Gradle 8.7
+
 ### Security
