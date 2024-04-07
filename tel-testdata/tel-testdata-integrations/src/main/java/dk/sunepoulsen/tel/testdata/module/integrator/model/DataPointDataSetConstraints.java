@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 @Schema(name = "Data Point Constraints", description = "Constraints that defines how to generate data for a dataset")
 public class DataPointDataSetConstraints implements BaseModel {
@@ -17,7 +19,7 @@ public class DataPointDataSetConstraints implements BaseModel {
     )
     @NotNull
     @Valid
-    private RangeModel<Double> xValues;
+    private RangeModel<BigDecimal> xValues;
 
     @Schema(
         description = "Range of the y values, when generating the data set",
@@ -26,7 +28,7 @@ public class DataPointDataSetConstraints implements BaseModel {
     )
     @NotNull
     @Valid
-    private RangeModel<Double> yValues;
+    private RangeModel<BigDecimal> yValues;
 
     @Schema(
         description = "Range of the number of data points in the data set",
