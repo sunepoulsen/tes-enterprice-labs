@@ -2,7 +2,6 @@ package dk.sunepoulsen.tel.testdata.module.integrator.model
 
 import dk.sunepoulsen.tel.testdata.module.integrator.testutils.ConstraintViolationAssertions
 import dk.sunepoulsen.tel.testdata.module.integrator.testutils.TestData
-import dk.sunepoulsen.tes.rest.models.PaginationModel
 import dk.sunepoulsen.tes.rest.models.RangeModel
 import dk.sunepoulsen.tes.rest.models.validation.DefaultValidator
 import dk.sunepoulsen.tes.rest.models.validation.annotations.OnCrudCreate
@@ -35,7 +34,7 @@ class DataPointDataSetSpec extends Specification {
             DataPointDataSet model = new DataPointDataSet(
                 name: 'name',
                 description: 'description',
-                creationConstraints: CREATION_CONSTRAINTS
+                constraints: CREATION_CONSTRAINTS
             )
 
         when:
@@ -51,8 +50,7 @@ class DataPointDataSetSpec extends Specification {
             DataPointDataSet model = new DataPointDataSet(
                 name: 'name',
                 description: 'description',
-                dataPoints: _dataPoints,
-                creationConstraints: new DataPointDataSetConstraints(
+                constraints: new DataPointDataSetConstraints(
                     xValues: _xValues,
                     yValues: _yValues,
                     quantity: _quantity,
@@ -67,9 +65,8 @@ class DataPointDataSetSpec extends Specification {
             ConstraintViolationAssertions.verifyViolations(exception.constraintViolations, _errors)
 
         where:
-            _testcase                             | _dataPoints                      | _xValues | _yValues | _quantity | _errors
-            'dataPoints is not null'              | new PaginationModel<DataPoint>() | X_VALUES | Y_VALUES | QUANTITY  | [TestData.createError('dataPoints', 'must be null'), TestData.createError('dataPoints.results', 'must not be null')]
-            'creationConstraints.xValues is null' | null                             | null     | Y_VALUES | QUANTITY  | [TestData.createError('creationConstraints.xValues', 'must not be null')]
+            _testcase                             | _xValues | _yValues | _quantity | _errors
+            'constraints.xValues is null' | null     | Y_VALUES | QUANTITY  | [TestData.createError('constraints.xValues', 'must not be null')]
     }
 
     void "Validate with group OnCrudRead is valid"() {
@@ -78,8 +75,7 @@ class DataPointDataSetSpec extends Specification {
                 id: 17,
                 name: 'name',
                 description: 'description',
-                dataPoints: TestData.createEmptyDataPoints(),
-                creationConstraints: CREATION_CONSTRAINTS
+                constraints: CREATION_CONSTRAINTS
             )
 
         when:
@@ -96,8 +92,7 @@ class DataPointDataSetSpec extends Specification {
                 id: 17,
                 name: 'name',
                 description: 'description',
-                dataPoints: _dataPoints,
-                creationConstraints: _constraints
+                constraints: _constraints
             )
 
         when:
@@ -108,15 +103,14 @@ class DataPointDataSetSpec extends Specification {
             ConstraintViolationAssertions.verifyViolations(exception.constraintViolations, _errors)
 
         where:
-            _testcase                     | _dataPoints                      | _constraints         | _errors
-            'dataPoints is null'          | null                             | CREATION_CONSTRAINTS | [TestData.createError('dataPoints', 'must not be null')]
-            'creationConstraints is null' | TestData.createEmptyDataPoints() | null                 | [TestData.createError('creationConstraints', 'must not be null')]
+            _testcase                     | _constraints | _errors
+            'constraints is null' | null         | [TestData.createError('constraints', 'must not be null')]
     }
 
     void "Validate with group OnCrudUpdate is valid"() {
         given:
             DataPointDataSet model = new DataPointDataSet(
-                creationConstraints: CREATION_CONSTRAINTS
+                constraints: CREATION_CONSTRAINTS
             )
 
         when:
@@ -124,22 +118,6 @@ class DataPointDataSetSpec extends Specification {
 
         then:
             noExceptionThrown()
-    }
-
-    void "Validate with group OnCrudUpdate is invalid"() {
-        given:
-            DataPointDataSet model = new DataPointDataSet(
-                dataPoints: TestData.createEmptyDataPoints(),
-            )
-
-        when:
-            this.validator.validate(model, Default, OnCrudUpdate)
-
-        then:
-            ConstraintViolationException exception = thrown(ConstraintViolationException)
-            ConstraintViolationAssertions.verifyViolations(exception.constraintViolations, [
-                TestData.createError('dataPoints', 'must be null')
-            ])
     }
 
 }

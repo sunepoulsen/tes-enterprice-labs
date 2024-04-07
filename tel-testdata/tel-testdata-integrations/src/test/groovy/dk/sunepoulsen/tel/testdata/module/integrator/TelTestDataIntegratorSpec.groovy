@@ -27,7 +27,7 @@ class TelTestDataIntegratorSpec extends Specification {
             DataPointDataSet dataSet = new DataPointDataSet(
                 name: 'name',
                 description: 'description',
-                creationConstraints: new DataPointDataSetConstraints(
+                constraints: new DataPointDataSetConstraints(
                     xValues: new RangeModel<Double>(min: 1.0, max: 200.0),
                     yValues: new RangeModel<Double>(min: 1.0, max: 200.0),
                     quantity: new RangeModel<Integer>(min: 50, max: 20000)
@@ -38,7 +38,7 @@ class TelTestDataIntegratorSpec extends Specification {
                 id: 1L,
                 name: 'name',
                 description: 'description',
-                creationConstraints: new DataPointDataSetConstraints(
+                constraints: new DataPointDataSetConstraints(
                     xValues: new RangeModel<Double>(min: 1.0, max: 200.0),
                     yValues: new RangeModel<Double>(min: 1.0, max: 200.0),
                     quantity: new RangeModel<Integer>(min: 50, max: 20000)
@@ -60,7 +60,7 @@ class TelTestDataIntegratorSpec extends Specification {
             DataPointDataSet dataSet = new DataPointDataSet(
                 name: 'name',
                 description: 'description',
-                creationConstraints: new DataPointDataSetConstraints(
+                constraints: new DataPointDataSetConstraints(
                     xValues: new RangeModel<Double>(min: 1.0, max: 200.0),
                     yValues: new RangeModel<Double>(min: 1.0, max: 200.0),
                     quantity: new RangeModel<Integer>(min: 50, max: 20000)
