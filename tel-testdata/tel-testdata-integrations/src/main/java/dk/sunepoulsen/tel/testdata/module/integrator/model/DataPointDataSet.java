@@ -14,6 +14,11 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @Schema(name = "Data Points", description = "Defines a data set of data points")
 public class DataPointDataSet extends DataSet {
+    @Schema(
+        description = "Constraints that defines how to generate data for this dataset",
+        requiredMode = Schema.RequiredMode.REQUIRED,
+        accessMode = Schema.AccessMode.READ_WRITE
+    )
     @NotNull(groups = {OnCrudCreate.class, OnCrudRead.class})
     @Valid
     private DataPointDataSetConstraints constraints;
