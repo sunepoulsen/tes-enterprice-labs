@@ -11,10 +11,10 @@ java {
 
 dependencies {
     // Tech Easy Solutions
-    testImplementation 'dk.sunepoulsen.tes-foundation:tes-rest-models:1.0.1-SNAPSHOT'
-    testImplementation 'dk.sunepoulsen.tes-foundation:tes-docker-containers:1.0.1-SNAPSHOT'
-    testImplementation 'dk.sunepoulsen.tes-foundation:tes-security:1.0.1-SNAPSHOT'
-    testImplementation 'dk.sunepoulsen.tes-foundation:tes-selenium:1.0.1-SNAPSHOT'
+    testImplementation 'dk.sunepoulsen.tes-foundation:tes-rest-models:2.0.0-SNAPSHOT'
+    testImplementation 'dk.sunepoulsen.tes-foundation:tes-docker-containers:2.0.0-SNAPSHOT'
+    testImplementation 'dk.sunepoulsen.tes-foundation:tes-security:2.0.0-SNAPSHOT'
+    testImplementation 'dk.sunepoulsen.tes-foundation:tes-selenium:2.0.0-SNAPSHOT'
 
     // Lombok
     testCompileOnly 'org.projectlombok:lombok:1.18.30'

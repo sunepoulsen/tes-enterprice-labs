@@ -10,10 +10,13 @@ plugins {
 }
 
 dependencies {
+    // TES Enterprise Labs
+    implementation project(':tel-testdata:tel-testdata-integrations')
+
     // Tech Easy Solutions
-    implementation 'dk.sunepoulsen.tes-foundation:tes-spring-boot-backend-logging:1.0.1-SNAPSHOT'
-    implementation 'dk.sunepoulsen.tes-foundation:tes-rest-models:1.0.1-SNAPSHOT'
-    implementation 'dk.sunepoulsen.tes-foundation:tes-spring-boot-rest-logic:1.0.1-SNAPSHOT'
+    implementation 'dk.sunepoulsen.tes-foundation:tes-spring-boot-backend-logging:2.0.0-SNAPSHOT'
+    implementation 'dk.sunepoulsen.tes-foundation:tes-rest-models:2.0.0-SNAPSHOT'
+    implementation 'dk.sunepoulsen.tes-foundation:tes-spring-boot-rest-logic:2.0.0-SNAPSHOT'
 
     // Spring Boot
     implementation('org.springframework.boot:spring-boot-starter-web')

@@ -1,9 +1,9 @@
 package dk.sunepoulsen.tel.testdata.module.integrator.model;
 
 import dk.sunepoulsen.tes.rest.models.BaseModel;
-import dk.sunepoulsen.tes.rest.models.validation.OnCrudCreate;
-import dk.sunepoulsen.tes.rest.models.validation.OnCrudRead;
-import dk.sunepoulsen.tes.rest.models.validation.OnCrudUpdate;
+import dk.sunepoulsen.tes.rest.models.validation.annotations.OnCrudCreate;
+import dk.sunepoulsen.tes.rest.models.validation.annotations.OnCrudRead;
+import dk.sunepoulsen.tes.rest.models.validation.annotations.OnCrudUpdate;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
@@ -13,8 +13,8 @@ import lombok.Data;
 @Data
 @Schema(name = "Dataset", description = "Defines a data set")
 public class DataSet implements BaseModel {
-    @Null(groups = {OnCrudCreate.class})
-    @NotNull(groups = {OnCrudRead.class, OnCrudUpdate.class})
+    @Null(groups = {OnCrudCreate.class, OnCrudUpdate.class})
+    @NotNull(groups = {OnCrudRead.class})
     @Parameter(description = "Unique id of the data set", required = true)
     private Long id;
 
