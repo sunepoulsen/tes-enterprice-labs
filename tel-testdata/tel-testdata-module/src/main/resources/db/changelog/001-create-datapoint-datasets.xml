@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet id="1" author="stp">
+        <createSequence cycle="false"
+                        incrementBy="1"
+                        sequenceName="dataset_id_seq"
+                        startValue="1"/>
+
+        <createTable tableName="datasets">
+            <column name="dataset_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="type" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="description" type="varchar(8192)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="update_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createSequence cycle="false"
+                        incrementBy="1"
+                        sequenceName="datapoint_dataset_id_seq"
+                        startValue="1"/>
+
+        <createTable tableName="datapoint_datasets">
+            <column name="datapoint_dataset_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="dataset_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="x_min" type="double">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="x_max" type="double">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="y_min" type="double">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="y_max" type="double">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="quantity_min" type="integer">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="quantity_max" type="integer">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="update_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createSequence cycle="false"
+                        incrementBy="1"
+                        sequenceName="datapoint_id_seq"
+                        startValue="1"/>
+
+        <createTable tableName="data_points">
+            <column name="datapoint_id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="datapoint_dataset_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="x" type="double">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="y" type="double">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="update_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

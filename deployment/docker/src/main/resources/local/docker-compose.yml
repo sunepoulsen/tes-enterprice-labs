@@ -1,4 +1,15 @@
 services:
+  postgres:
+     image: @databaseImage@:@databaseTag@
+     environment:
+       POSTGRES_PASSWORD: '@databaseSuperUserPassword@'
+     ports:
+       - "29432:5432"
+     volumes:
+       - "./../db/001-tel-testdata.sh:/docker-entrypoint-initdb.d/001-tel-testdata.sh"
+       - tel-postgresql:/var/lib/postgresql
+       - tel-postgresql-data:/var/lib/postgresql/data
+
   @telTestDataDockerImageName@:
     image: @telTestDataDockerImageName@:@version@
     environment:
@@ -19,3 +30,7 @@ services:
       - "@certificateDirectory@/@certificatePemFilename@:/var/lib/nginx/@certificatePemFilename@:ro"
       - "@certificateDirectory@/@certificateKeyFilename@:/var/lib/nginx/@certificateKeyFilename@:ro"
       - "@certificateDirectory@/@certificatePasswordFilename@:/var/lib/nginx/tes-enterprise-labs-passwords.txt:ro"
+
+volumes:
+  tel-postgresql:
+  tel-postgresql-data:

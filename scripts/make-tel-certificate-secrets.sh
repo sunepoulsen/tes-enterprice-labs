@@ -27,7 +27,7 @@ cd $1
 # Delete previous certificate files
 rm -rf $ALIAS-password.txt $KEYSTORE_FILE $PEM_FILE $KEY_FILE
 
-# Generate a passphrase
+# Generate a passphrase for certificate
 openssl rand -base64 48 > $ALIAS-password.txt
 KEYSTORE_PASSWORD=$(cat $ALIAS-password.txt)
 
