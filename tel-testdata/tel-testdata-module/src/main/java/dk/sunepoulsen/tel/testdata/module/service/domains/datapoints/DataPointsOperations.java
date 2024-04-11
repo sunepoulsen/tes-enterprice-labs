@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Tag(name="Data Points", description = "Endpoints to manage data sets with X- and Y-coordinates")
 @RequestMapping(DataPointsOperations.DATASETS_DATA_POINTS_ENDPOINT_PATH)
 @Validated
-public interface DataPointsOperations {
+interface DataPointsOperations {
 
     String DATASETS_DATA_POINTS_ENDPOINT_PATH = "/datasets/data-points";
 

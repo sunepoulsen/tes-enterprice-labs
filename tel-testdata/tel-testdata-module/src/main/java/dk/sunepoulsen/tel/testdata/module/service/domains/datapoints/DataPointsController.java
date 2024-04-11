@@ -1,13 +1,32 @@
 package dk.sunepoulsen.tel.testdata.module.service.domains.datapoints;
 
 import dk.sunepoulsen.tel.testdata.module.integrator.model.DataPointDataSet;
+import dk.sunepoulsen.tel.testdata.module.service.domains.persistence.DataPointDataSetPersistence;
+import dk.sunepoulsen.tes.springboot.rest.logic.exceptions.LogicException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(DataPointsOperations.DATASETS_DATA_POINTS_ENDPOINT_PATH)
-public class DataPointsController implements DataPointsOperations {
+class DataPointsController implements DataPointsOperations {
+
+    private final DataPointDataSetPersistence persistence;
+    private final DataPointsTransformations transformations;
+
+    public DataPointsController(DataPointDataSetPersistence persistence, DataPointsTransformations transformations) {
+        this.persistence = persistence;
+        this.transformations = transformations;
+    }
+
     @PostMapping
     public DataPointDataSet createDataPointDataSet(DataPointDataSet dataPointDataSet) {
-        throw new UnsupportedOperationException("Not implemented yet!");
+        try {
+            return transformations.toModel(
+                persistence.create(
+                    transformations.toEntity(dataPointDataSet)
+                )
+            );
+        } catch (LogicException ex) {
+            throw ex.mapApiException();
+        }
     }
 }
