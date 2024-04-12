@@ -3,6 +3,7 @@ package dk.sunepoulsen.tel.testdata.module.service.domains.datapoints;
 import dk.sunepoulsen.tel.testdata.module.integrator.model.DataPointDataSet;
 import dk.sunepoulsen.tel.testdata.module.service.domains.persistence.DataPointDataSetPersistence;
 import dk.sunepoulsen.tes.springboot.rest.logic.exceptions.LogicException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,6 +13,7 @@ class DataPointsController implements DataPointsOperations {
     private final DataPointDataSetPersistence persistence;
     private final DataPointsTransformations transformations;
 
+    @Autowired
     public DataPointsController(DataPointDataSetPersistence persistence, DataPointsTransformations transformations) {
         this.persistence = persistence;
         this.transformations = transformations;

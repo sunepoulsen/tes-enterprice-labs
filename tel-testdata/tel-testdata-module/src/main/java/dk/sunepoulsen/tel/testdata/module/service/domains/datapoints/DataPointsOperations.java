@@ -49,13 +49,6 @@ interface DataPointsOperations {
             )
         ),
         @ApiResponse(
-            responseCode = "403",
-            description = "Forbidden for security reasons",
-            content = @Content(
-                schema = @Schema(implementation = ServiceErrorModel.class)
-            )
-        ),
-        @ApiResponse(
             responseCode = "500",
             description = "Unable to process this request",
             content = @Content(

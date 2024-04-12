@@ -1,7 +1,10 @@
 package dk.sunepoulsen.tel.testdata.module.ct
 
+import dk.sunepoulsen.tel.testdata.module.integrator.TelTestDataIntegrator
+import dk.sunepoulsen.tel.testdata.module.integrator.TelTestDataTestsIntegrator
 import dk.sunepoulsen.tel.testdata.module.integrator.model.DataPointDataSet
 import dk.sunepoulsen.tel.testdata.module.integrator.model.DataPointDataSetConstraints
+import dk.sunepoulsen.tes.docker.containers.TESBackendContainer
 import dk.sunepoulsen.tes.rest.integrations.exceptions.ClientBadRequestException
 import dk.sunepoulsen.tes.rest.models.RangeModel
 import dk.sunepoulsen.tes.rest.models.ServiceValidationError
@@ -13,9 +16,46 @@ import spock.lang.Specification
  */
 class DataPointDataSetSpec extends Specification {
 
-    void "POST /datasets/data-points: Bad request"() {
+    private TESBackendContainer container
+    private TelTestDataTestsIntegrator testsSut
+    private TelTestDataIntegrator sut
+
+    void setup() {
+        this.container = DeploymentSpockExtension.telTestDataBackendContainer()
+        this.testsSut = DeploymentSpockExtension.telTestDataBackendTestsIntegrator()
+        this.sut = DeploymentSpockExtension.telTestDataBackendIntegrator()
+
+        this.testsSut.deletePersistence()
+    }
+
+    void "POST /datasets/data-points: ACCEPTED"() {
         given: 'Service is available'
-            DeploymentSpockExtension.telTestDataBackendContainer().isHostAccessible()
+            this.container.isHostAccessible()
+
+        and: 'a body with validation errors'
+            DataPointDataSet dataset = new DataPointDataSet(
+                name: 'name',
+                description: 'description',
+                constraints: new DataPointDataSetConstraints(
+                    xValues: new RangeModel<BigDecimal>(min: 5.0, max: 10.0),
+                    yValues: new RangeModel<BigDecimal>(min: 5.0, max: 10.0),
+                    quantity: new RangeModel<Integer>(min: 5, max: 10),
+                )
+            )
+
+        when: 'Call POST /datasets/data-points'
+            DataPointDataSet result = sut.createDataPointDataSet(dataset).blockingGet()
+
+        then: 'Verify that we receive a ACCEPTED response and the right body'
+            result.id > 0
+            result.name == dataset.name
+            result.description == dataset.description
+            result.constraints == dataset.constraints
+    }
+
+    void "POST /datasets/data-points: BAD REQUEST"() {
+        given: 'Service is available'
+            this.container.isHostAccessible()
 
         and: 'a body with validation errors'
             DataPointDataSet dataset = new DataPointDataSet(
@@ -29,7 +69,7 @@ class DataPointDataSetSpec extends Specification {
             )
 
         when: 'Call POST /datasets/data-points'
-            DeploymentSpockExtension.telTestDataBackendIntegrator().createDataPointDataSet(dataset).blockingGet()
+            sut.createDataPointDataSet(dataset).blockingGet()
 
         then: 'Verify that we receive a bad request'
             ClientBadRequestException ex = thrown(ClientBadRequestException)
