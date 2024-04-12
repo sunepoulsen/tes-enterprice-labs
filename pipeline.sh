@@ -10,7 +10,7 @@ echo
 ./pipeline-clean-repo.sh
 
 echo
-./pipeline-certificates.sh
+./pipeline-secrets.sh
 
 echo
 ./pipeline-build-tel-testdata-module.sh

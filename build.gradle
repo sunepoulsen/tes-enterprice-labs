@@ -64,10 +64,16 @@ subprojects {
 
 }
 
-tasks.register('makeCertificates') {
+tasks.register('makeSecrets') {
     doLast {
         exec {
-            commandLine "${rootDir.absolutePath}/scripts/make-tel-certificate.sh", "${project.rootDir.absolutePath}/build/certs"
+            commandLine "${rootDir.absolutePath}/scripts/make-tel-certificate-secrets.sh", "${project.rootDir.absolutePath}/build/secrets"
+        }
+        exec {
+            commandLine "${rootDir.absolutePath}/scripts/create-database-super-user-secrets.sh", "${project.rootDir.absolutePath}/build/secrets"
+        }
+        exec {
+            commandLine "${rootDir.absolutePath}/scripts/create-tel-testdata-database-secrets.sh", "${project.rootDir.absolutePath}/build/secrets"
         }
     }
 }

@@ -57,5 +57,14 @@ tasks.register('undeploy') {
     }
 }
 
+tasks.register('deleteVolumes') {
+    doLast {
+        exec {
+            logger.debug('Deleting volumes')
+            commandLine 'docker', 'volume', 'rm', 'local_tel-postgresql', 'local_tel-postgresql-data'
+        }
+    }
+}
+
 tasks.deploy.dependsOn tasks.processResources
 tasks.undeploy.dependsOn tasks.processResources

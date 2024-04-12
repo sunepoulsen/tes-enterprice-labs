@@ -15,13 +15,20 @@ import org.spockframework.runtime.model.SpecInfo
 import org.testcontainers.containers.BindMode
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.Network
+import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.utility.MountableFile
 
 import javax.net.ssl.SSLContext
+import java.nio.charset.StandardCharsets
+import java.time.Duration
+import java.time.temporal.ChronoUnit
 
 @Slf4j
 class DeploymentSpockExtension implements IGlobalExtension {
+    private static GenericContainer<?> databaseContainer = null
+    private DockerImageProvider databaseDockerImageProvider = new ClasspathPropertiesDockerImageProvider('/deployment.properties', 'database')
     private static TESBackendContainer telTestDataBackendContainer = null
     private static GenericContainer telWebContainer = null
 
@@ -64,6 +71,18 @@ class DeploymentSpockExtension implements IGlobalExtension {
     void start() {
         Network network = Network.newNetwork()
 
+        databaseContainer = new GenericContainer<>(databaseDockerImageProvider.dockerImageName())
+            .withEnv('POSTGRES_PASSWORD', deploymentProperties.getProperty('database.super.user.password'))
+            .withClasspathResourceMapping('db/001-tel-testdata.sh', '/docker-entrypoint-initdb.d/001-tel-testdata.sh', BindMode.READ_ONLY)
+            .waitingFor((new LogMessageWaitStrategy())
+                .withRegEx(".*database system is ready to accept connections.*\\s")
+                .withTimes(2)
+                .withStartupTimeout(Duration.of(60L, ChronoUnit.SECONDS))
+            )
+            .withNetworkAliases('postgres')
+            .withNetwork(network)
+        databaseContainer.start()
+
         telTestDataBackendContainer = new TESBackendContainer(telTestDataDockerImageProvider, new TESContainerSecureProtocol(), 'systemtests')
             .withClasspathResourceMapping('/config/tel-testdata/application-systemtests.properties', '/app/resources/application-systemtests.properties', BindMode.READ_ONLY)
             .withCopyFileToContainer(MountableFile.forHostPath(deploymentProperties.getProperty('ssl.key-store')), "/app/certificates/${deploymentProperties.getProperty('ssl.key-store.filename')}")
@@ -95,5 +114,11 @@ class DeploymentSpockExtension implements IGlobalExtension {
         telWebContainer.copyFileFromContainer('/var/log/nginx/access.log', 'build/logs/tel-web-module-access.log')
         telWebContainer.copyFileFromContainer('/var/log/nginx/error.log', 'build/logs/tel-web-module-error.log')
         telWebContainer.stop()
+
+        File databaseLogFile = new File('build/logs/postgres.log')
+        databaseLogFile.withWriter(StandardCharsets.UTF_8.name()) { w ->
+            w << databaseContainer.logs
+        }
+        databaseContainer.stop()
     }
 }

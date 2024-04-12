@@ -5,15 +5,15 @@ plugins {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(project.property('java.version').toString())
     }
 }
 
 dependencies {
     // Tech Easy Solutions
-    testImplementation 'dk.sunepoulsen.tes-foundation:tes-rest-integrations:1.0.1-SNAPSHOT'
-    testImplementation 'dk.sunepoulsen.tes-foundation:tes-security:1.0.1-SNAPSHOT'
-    testImplementation 'dk.sunepoulsen.tes-foundation:tes-selenium:1.0.1-SNAPSHOT'
+    testImplementation 'dk.sunepoulsen.tes-foundation:tes-rest-integrations:2.0.0-SNAPSHOT'
+    testImplementation 'dk.sunepoulsen.tes-foundation:tes-security:2.0.0-SNAPSHOT'
+    testImplementation 'dk.sunepoulsen.tes-foundation:tes-selenium:2.0.0-SNAPSHOT'
 
     // Lombok
     testCompileOnly 'org.projectlombok:lombok:1.18.30'
@@ -25,7 +25,7 @@ dependencies {
 
     // Spock
     testImplementation 'org.apache.groovy:groovy-all:4.0.16'
-    testImplementation 'org.spockframework:spock-core:2.3-groovy-4.0'
+    testImplementation 'org.spockframework:spock-core:2.4-M1-groovy-4.0'
     testImplementation 'net.bytebuddy:byte-buddy:1.14.10'
     testImplementation 'org.objenesis:objenesis:3.3'
 }

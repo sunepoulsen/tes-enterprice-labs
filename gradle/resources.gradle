@@ -1,24 +1,72 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-def certificatePasswordFile = new File("${project.rootDir.absolutePath}/build/certs/tes-enterprise-labs-password.txt")
-def certificatePassword = 'null'
-if (certificatePasswordFile.exists()) {
-    certificatePassword = certificatePasswordFile.text
+/**
+ * Reads a password from a file in the build/secrets directory.
+ *
+ * @param filename File to read the password from
+ *
+ * @return The read password or 'null' if the file does not exist.
+ */
+String readPasswordFromFile(String filename) {
+    def file = new File("${project.rootDir.absolutePath}/build/secrets/${filename}")
+    if (file.exists()) {
+        String password = file.text.trim()
+        if (password.endsWith('\n')) {
+            password = password.substring(0, password.length()-1)
+        }
+
+        return password
+    }
+
+    // Return null password
+    return 'null'
+}
+
+/**
+ * Reads a password from a system property or a file
+ *
+ * @param passwordSystemProperty System property to read the password from
+ * @param filename File to read the password from
+ *
+ * @return The read password or 'null' if either the system property or the file exist.
+ */
+String readPasswordFromSystemPropertyOrFile(String passwordSystemProperty, String filename) {
+    // Read password from system property and return it
+    if (System.properties.containsKey(passwordSystemProperty)) {
+        return System.properties[passwordSystemProperty]
+    }
+
+    return readPasswordFromFile(filename)
 }
 
 def resourceProperties = [
+    // Project properties
     projectName: project.name.toString(),
     projectBuildDir: "${project.projectDir.absolutePath}/build".toString(),
     version: project.property('version').toString(),
+
+    // Docker Image properties
     telTestDataDockerImageName: project.property('tel-testdata.docker.image.name').toString(),
     telWebDockerImageName: project.property('tel-web.docker.image.name').toString(),
-    certificateDirectory: "${project.rootDir.absolutePath}/build/certs".toString(),
-    certificateFile: "${project.rootDir.absolutePath}/build/certs/tes-enterprise-labs.p12".toString(),
+    databaseImage: project.property('database.image.name').toString(),
+    databaseTag: project.property('database.image.tag').toString(),
+
+    // HTTPS Certificate properties
+    certificateDirectory: "${project.rootDir.absolutePath}/build/secrets".toString(),
+    certificateFile: "${project.rootDir.absolutePath}/build/secrets/tes-enterprise-labs.p12".toString(),
     certificateFilename: 'tes-enterprise-labs.p12'.toString(),
     certificatePemFilename: 'tes-enterprise-labs.pem'.toString(),
     certificateKeyFilename: 'tes-enterprise-labs.key'.toString(),
     certificatePasswordFilename: 'tes-enterprise-labs-password.txt'.toString(),
-    certificatePassword: certificatePassword.toString()
+    certificatePassword: readPasswordFromFile('tes-enterprise-labs-password.txt'),
+
+    // Properties for databases
+    databaseSuperUserPassword: readPasswordFromSystemPropertyOrFile('tel.database.super.user.password', 'database-super-user-password.txt'),
+    telTestDataDatabase: 'tel_testdata',
+    telTestDataAdminUsername: 'tel_testdata_adm',
+    telTestDataAdminPassword: readPasswordFromSystemPropertyOrFile('tel.database.admin.password', 'tel-testdata-admin-password.txt'),
+    telTestDataApplicationUsername: 'tel_testdata_app',
+    telTestDataApplicationPassword: readPasswordFromSystemPropertyOrFile('tel.database.application.password', 'tel-testdata-application-password.txt'),
 ]
 
 processResources {

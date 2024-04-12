@@ -1,0 +1,12 @@
+dependencies {
+    // Tech Easy Solutions
+    implementation 'dk.sunepoulsen.tes-foundation:tes-rest-models:2.0.0-SNAPSHOT'
+    implementation 'dk.sunepoulsen.tes-foundation:tes-rest-integrations:2.0.0-SNAPSHOT'
+
+    // Validation
+    implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+
+    // Hibernate Validation
+    testImplementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
+    testImplementation 'org.apache.tomcat.embed:tomcat-embed-el:10.1.16'
+}

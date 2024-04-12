@@ -22,9 +22,13 @@ For release-dates, use date-format: YYYY-MM-DD
 - [TESENTLABS-4](https://sunepoulsen.atlassian.net/browse/TESENTLABS-4): Create Docker Compose deployment
 - [TESENTLABS-17](https://sunepoulsen.atlassian.net/browse/TESENTLABS-17): Autogenerate certificates with Gradle on execution
 - [TESENTLABS-24](https://sunepoulsen.atlassian.net/browse/TESENTLABS-24): Create a deployment test
+- [TESENTLABS-27](https://sunepoulsen.atlassian.net/browse/TESENTLABS-27): Manage data sets in tel-testdata
 
 ### Fixed
 
 ### Development
+
+- [TESENTLABS-27](https://sunepoulsen.atlassian.net/browse/TESENTLABS-27): Manage data sets in tel-testdata
+  - Upgrade to Gradle 8.7
 
 ### Security

@@ -33,6 +33,12 @@
     ],
     "groups": [
       {
+        "name": "dk.sunepoulsen.tes-foundation",
+        "types": [
+          "-SNAPSHOT"
+        ]
+      },
+      {
         "name": "org.spockframework",
         "types": [
           "-groovy-4.0"

@@ -6,8 +6,8 @@ TES Enterprise Labs is an enterprise solution to test out enterprise technologie
 
 The solution has the following domains:
 
-- **tel-metrics**: Backend module to collected metrics from other backend services.
-- **tel-web**: Website to visualise features from TES Enterprise Labs.
+- [Tel TestData](tel-testdata/README.md): Backend module to generate and store test data.
+- [Tel Web](tel-web/README.md): Website to visualise features from TES Enterprise Labs.
 
 ## Building
 
@@ -31,7 +31,14 @@ systemProp.maven.repository.password=<Password for the user account>
 
 systemProp.sonar.host.url=<URL to SonarQube>
 systemProp.sonar.login=<Auth token to SonarQube>
+
+# System properties for TES Enterprise Labs
+systemProp.tel.database.super.user.password=<password for the database super user>
+systemProp.tel.database.admin.password=<password for the database admin user>
+systemProp.tel.database.application.password=<password for the database application user>
 ```
+The `tel.database.admin.password` and `tel.database.application.password` is used for all databases
+in the solution.
 
 ### Pipeline
 
@@ -44,13 +51,11 @@ A complete pipeline to build the project can be used with:
 This pipeline has the following steps:
 
 1. Clean the repository.
-2. Build the Reporting Store backend including build a docker image.
-3. Run the component tests against the Reporting Store backend with the docker image from step 2.
-4. Run the stress tests against the Reporting Store backend with the `local` profile. The stress test uses the 
-   docker image from step 2.
-5. Build the Reporting Web frontend.
-6. Build a docker image of the Reporting Web frontend.
-7. Run the component tests against the Reporting Web frontend using the docker image from step 6.
+2. Build the `TEL TestData` backend including build a docker image.
+3. Run the component tests against the `TEL TestData` backend with the docker image from step 2.
+5. Build the `TEL Web` frontend.
+6. Build a docker image of the `TEL Web` frontend.
+7. Run the component tests against the `TEL Web` frontend using the docker image from step 6.
 8. Run a system test with all the deployable components of the solution.
 9. Analyzing the project with SonarQube - including check of dependency vulnerabilities.
 
@@ -69,7 +74,7 @@ If you want to change the Java distribution being used then you can overwrite th
 The different backend modules can be run by a normal Spring Boot Run configuration in IntelliJ.
 
 There are created some Docker Compose configurations to run the entire solution with Docker. The documentation of these
-configurations can be found here: [Docker Compose Configurations](docker/README.md)
+configurations can be found here: [Docker Compose Configurations](deployment/docker/README.md)
 
 ## Code Analysing
 

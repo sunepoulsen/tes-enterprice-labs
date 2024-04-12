@@ -18,6 +18,9 @@ For release-dates, use date-format: YYYY-MM-DD
 ### Features
 
 - [TESENTLABS-2](https://sunepoulsen.atlassian.net/browse/TESENTLABS-2): Create testdata backend service
+- [TESENTLABS-27](https://sunepoulsen.atlassian.net/browse/TESENTLABS-27): Manage data sets in tel-testdata
+  - Add api model for the endpoints `POST /datasets/data-points`
+  - Add database migration for data sets with data points.
 
 ### Fixed
 
