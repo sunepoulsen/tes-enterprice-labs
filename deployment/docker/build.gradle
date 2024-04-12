@@ -60,8 +60,6 @@ tasks.register('undeploy') {
 tasks.register('deleteVolumes') {
     doLast {
         exec {
-            workingDir "$buildDir"
-
             logger.debug('Deleting volumes')
             commandLine 'docker', 'volume', 'rm', 'local_tel-postgresql', 'local_tel-postgresql-data'
         }
