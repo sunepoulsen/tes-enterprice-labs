@@ -31,7 +31,14 @@ systemProp.maven.repository.password=<Password for the user account>
 
 systemProp.sonar.host.url=<URL to SonarQube>
 systemProp.sonar.login=<Auth token to SonarQube>
+
+# System properties for TES Enterprise Labs
+systemProp.tel.database.super.user.password=<password for the database super user>
+systemProp.tel.database.admin.password=<password for the database admin user>
+systemProp.tel.database.application.password=<password for the database application user>
 ```
+The `tel.database.admin.password` and `tel.database.application.password` is used for all databases
+in the solution.
 
 ### Pipeline
 

@@ -1,16 +1,42 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-def readPasswordFromFile(String filename) {
+/**
+ * Reads a password from a file in the build/secrets directory.
+ *
+ * @param filename File to read the password from
+ *
+ * @return The read password or 'null' if the file does not exist.
+ */
+String readPasswordFromFile(String filename) {
     def file = new File("${project.rootDir.absolutePath}/build/secrets/${filename}")
-    def password = 'null'
     if (file.exists()) {
-        password = file.text.trim()
+        String password = file.text.trim()
         if (password.endsWith('\n')) {
             password = password.substring(0, password.length()-1)
         }
+
+        return password
     }
 
-    return password.toString()
+    // Return null password
+    return 'null'
+}
+
+/**
+ * Reads a password from a system property or a file
+ *
+ * @param passwordSystemProperty System property to read the password from
+ * @param filename File to read the password from
+ *
+ * @return The read password or 'null' if either the system property or the file exist.
+ */
+String readPasswordFromSystemPropertyOrFile(String passwordSystemProperty, String filename) {
+    // Read password from system property and return it
+    if (System.properties.containsKey(passwordSystemProperty)) {
+        return System.properties[passwordSystemProperty]
+    }
+
+    return readPasswordFromFile(filename)
 }
 
 def resourceProperties = [
@@ -35,12 +61,12 @@ def resourceProperties = [
     certificatePassword: readPasswordFromFile('tes-enterprise-labs-password.txt'),
 
     // Properties for databases
-    databaseSuperUserPassword: readPasswordFromFile('database-super-user-password.txt'),
+    databaseSuperUserPassword: readPasswordFromSystemPropertyOrFile('tel.database.super.user.password', 'database-super-user-password.txt'),
     telTestDataDatabase: 'tel_testdata',
     telTestDataAdminUsername: 'tel_testdata_adm',
-    telTestDataAdminPassword: readPasswordFromFile('tel-testdata-admin-password.txt'),
+    telTestDataAdminPassword: readPasswordFromSystemPropertyOrFile('tel.database.admin.password', 'tel-testdata-admin-password.txt'),
     telTestDataApplicationUsername: 'tel_testdata_app',
-    telTestDataApplicationPassword: readPasswordFromFile('tel-testdata-application-password.txt'),
+    telTestDataApplicationPassword: readPasswordFromSystemPropertyOrFile('tel.database.application.password', 'tel-testdata-application-password.txt'),
 ]
 
 processResources {
