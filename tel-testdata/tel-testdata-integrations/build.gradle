@@ -8,5 +8,5 @@ dependencies {
 
     // Hibernate Validation
     testImplementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
-    testImplementation 'org.apache.tomcat.embed:tomcat-embed-el:10.1.16'
+    testImplementation 'org.apache.tomcat.embed:tomcat-embed-el:10.1.20'
 }

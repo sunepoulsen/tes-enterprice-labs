@@ -39,6 +39,16 @@
         ]
       },
       {
+        "name": "org.owasp",
+        "artifacts": [
+          {
+            "name": "dependency-check-gradle",
+            "limit_version": "9.0.10",
+            "reason": "The latest version of the dependency breaks the `com.google.cloud.tools.jib` plugin"
+          }
+        ]
+      },
+      {
         "name": "org.spockframework",
         "types": [
           "-groovy-4.0"

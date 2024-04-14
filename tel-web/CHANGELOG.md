@@ -22,3 +22,6 @@ For release-dates, use date-format: YYYY-MM-DD
 ### Fixed
 
 ### Security
+
+- [TESENTLABS-37](https://sunepoulsen.atlassian.net/browse/TESENTLABS-37): Updated dependencies to latest, except for
+  `eslint` that is updated to the same version as used by `@vue/eslint-config-typescript`
