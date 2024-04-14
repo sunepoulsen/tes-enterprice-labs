@@ -8,5 +8,6 @@ cd $FRONTEND_DIR || exit
 npm install || exit
 npm run test:unit:coverage || exit
 npm run lint || exit
+npm run build || exit
 
 cd - || exit

@@ -1,4 +1,4 @@
-FROM nginx:1.25.2
+FROM @telWebBaseDockerImageName@:@telWebBaseDockerImageTag@
 
 RUN rm -f /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d
@@ -14,6 +14,6 @@ RUN rm -f /var/log/nginx/*
 
 USER nginx
 
-COPY build/dist /usr/share/nginx/html
+COPY dist /usr/share/nginx/html
 
 EXPOSE 443

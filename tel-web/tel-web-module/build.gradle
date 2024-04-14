@@ -20,14 +20,3 @@ tasks.register('clean') {
         }
     }
 }
-
-tasks.register('buildImage') {
-    doLast {
-        exec {
-            commandLine 'npm', 'run', 'build'
-        }
-        exec {
-            commandLine 'docker/build-image.sh', project.property('tel-web.docker.image.name'), "$version"
-        }
-    }
-}

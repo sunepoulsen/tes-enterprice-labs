@@ -32,3 +32,20 @@ npm run test:unit
 ```sh
 npm run lint
 ```
+
+### Dependencies
+
+Dependencies can be updated with the `ncu` tool. Instructions to how to install and use it can be found here:
+[npm-check-updates](https://www.npmjs.com/package/npm-check-updates)
+
+To list updatable dependencies:
+
+```bash
+ncu
+```
+
+To update updatable dependencies to their latest version:
+
+```bash
+ncu -u
+```

@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(project.property('java.version').toString())
+    }
+}
+
+apply from: "${rootProject.projectDir}/gradle/resources.gradle"
+
+tasks.register('buildImage') {
+    def telWebDistDir = "${project(':tel-web:tel-web-module').projectDir.absolutePath}/dist".toString()
+    def distBuildDir = "${project.projectDir.absolutePath}/build/resources/main".toString()
+
+    def imageName = project.property('tel-web.docker.image.name').toString()
+    def imageTag = "$version"
+
+    doLast {
+        exec {
+            commandLine 'cp', '-rf', "${telWebDistDir}", "${distBuildDir}"
+        }
+        exec {
+            workingDir distBuildDir
+            commandLine 'docker', 'buildx', 'build', '-t', "${imageName}:${imageTag}", '.'
+        }
+        exec {
+            workingDir distBuildDir
+            commandLine 'docker', 'image', 'prune', '-f'
+        }
+    }
+}
+
+tasks.buildImage.dependsOn tasks.processResources
