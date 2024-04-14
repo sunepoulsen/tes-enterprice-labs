@@ -21,4 +21,6 @@ include 'tel-testdata:tel-testdata-module'
 include 'tel-web'
 include 'tel-web:tel-web-module'
 include 'tel-web:tel-web-component-tests'
+include 'tel-web:tel-web-docker-image'
 include 'system-tests'
+

@@ -48,6 +48,8 @@ def resourceProperties = [
     // Docker Image properties
     telTestDataDockerImageName: project.property('tel-testdata.docker.image.name').toString(),
     telWebDockerImageName: project.property('tel-web.docker.image.name').toString(),
+    telWebBaseDockerImageName: project.property('web.module.base.image.name').toString(),
+    telWebBaseDockerImageTag: project.property('web.module.base.image.tag').toString(),
     databaseImage: project.property('database.image.name').toString(),
     databaseTag: project.property('database.image.tag').toString(),
 
