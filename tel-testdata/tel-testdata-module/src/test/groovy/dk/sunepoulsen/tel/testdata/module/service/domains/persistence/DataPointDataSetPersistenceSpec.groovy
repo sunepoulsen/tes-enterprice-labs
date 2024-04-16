@@ -1,6 +1,7 @@
 package dk.sunepoulsen.tel.testdata.module.service.domains.persistence
 
 import dk.sunepoulsen.tel.testdata.module.service.domains.persistence.model.DataPointDataSetEntity
+import dk.sunepoulsen.tel.testdata.module.service.domains.persistence.model.DataPointsDataSetStatusType
 import dk.sunepoulsen.tel.testdata.module.service.domains.persistence.model.DataSetType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -32,6 +33,7 @@ class DataPointDataSetPersistenceSpec extends Specification {
                 maxY: 15.0,
                 minQuantity: 20,
                 maxQuantity: 2000,
+                status: DataPointsDataSetStatusType.NEW
             ))
 
         then:

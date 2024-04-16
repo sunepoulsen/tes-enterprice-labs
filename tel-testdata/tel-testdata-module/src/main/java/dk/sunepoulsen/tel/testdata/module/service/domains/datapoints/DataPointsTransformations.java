@@ -2,7 +2,9 @@ package dk.sunepoulsen.tel.testdata.module.service.domains.datapoints;
 
 import dk.sunepoulsen.tel.testdata.module.integrator.model.DataPointDataSet;
 import dk.sunepoulsen.tel.testdata.module.integrator.model.DataPointDataSetConstraints;
+import dk.sunepoulsen.tel.testdata.module.integrator.model.DataPointDataSetStatus;
 import dk.sunepoulsen.tel.testdata.module.service.domains.persistence.model.DataPointDataSetEntity;
+import dk.sunepoulsen.tel.testdata.module.service.domains.persistence.model.DataPointsDataSetStatusType;
 import dk.sunepoulsen.tes.rest.models.RangeModel;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,7 @@ class DataPointsTransformations {
         entity.setMaxY(model.getConstraints().getYValues().getMax().doubleValue());
         entity.setMinQuantity(model.getConstraints().getQuantity().getMin());
         entity.setMaxQuantity(model.getConstraints().getQuantity().getMax());
+        entity.setStatus(DataPointsDataSetStatusType.valueOf(model.getStatus().name()));
 
         return entity;
     }
@@ -51,6 +54,8 @@ class DataPointsTransformations {
         constraints.setYValues(yValues);
         constraints.setQuantity(quantity);
         model.setConstraints(constraints);
+
+        model.setStatus(DataPointDataSetStatus.valueOf(entity.getStatus().name()));
 
         return model;
     }

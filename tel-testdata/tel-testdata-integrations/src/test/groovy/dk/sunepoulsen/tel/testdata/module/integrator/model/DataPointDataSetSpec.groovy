@@ -54,7 +54,8 @@ class DataPointDataSetSpec extends Specification {
                     xValues: _xValues,
                     yValues: _yValues,
                     quantity: _quantity,
-                )
+                ),
+                status: _status
             )
 
         when:
@@ -65,8 +66,9 @@ class DataPointDataSetSpec extends Specification {
             ConstraintViolationAssertions.verifyViolations(exception.constraintViolations, _errors)
 
         where:
-            _testcase                             | _xValues | _yValues | _quantity | _errors
-            'constraints.xValues is null' | null     | Y_VALUES | QUANTITY  | [TestData.createError('constraints.xValues', 'must not be null')]
+            _testcase                     | _xValues | _yValues | _quantity | _status                            | _errors
+            'constraints.xValues is null' | null     | Y_VALUES | QUANTITY  | null                               | [TestData.createError('constraints.xValues', 'must not be null')]
+            'status is not null'          | X_VALUES | Y_VALUES | QUANTITY  | DataPointDataSetStatus.IN_PROGRESS | [TestData.createError('status', 'must be null')]
     }
 
     void "Validate with group OnCrudRead is valid"() {
@@ -75,7 +77,8 @@ class DataPointDataSetSpec extends Specification {
                 id: 17,
                 name: 'name',
                 description: 'description',
-                constraints: CREATION_CONSTRAINTS
+                constraints: CREATION_CONSTRAINTS,
+                status: DataPointDataSetStatus.NEW
             )
 
         when:
@@ -92,7 +95,8 @@ class DataPointDataSetSpec extends Specification {
                 id: 17,
                 name: 'name',
                 description: 'description',
-                constraints: _constraints
+                constraints: _constraints,
+                status: DataPointDataSetStatus.NEW
             )
 
         when:
@@ -118,6 +122,23 @@ class DataPointDataSetSpec extends Specification {
 
         then:
             noExceptionThrown()
+    }
+
+    void "Validate with group OnCrudUpdate is invalid"() {
+        given:
+            DataPointDataSet model = new DataPointDataSet(
+                constraints: CREATION_CONSTRAINTS,
+                status: DataPointDataSetStatus.IN_PROGRESS
+            )
+
+        when:
+            this.validator.validate(model, Default, OnCrudUpdate)
+
+        then:
+            ConstraintViolationException exception = thrown(ConstraintViolationException)
+            ConstraintViolationAssertions.verifyViolations(exception.constraintViolations, [
+                TestData.createError('status', 'must be null')
+            ])
     }
 
 }

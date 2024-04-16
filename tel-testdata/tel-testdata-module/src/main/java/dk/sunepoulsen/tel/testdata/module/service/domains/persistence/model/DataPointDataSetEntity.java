@@ -38,6 +38,10 @@ public class DataPointDataSetEntity extends DataSetEntity {
     @Column(name="quantity_max", nullable = false)
     private Integer maxQuantity;
 
+    @Column(name="status", nullable = false)
+    @Enumerated( EnumType.STRING )
+    private DataPointsDataSetStatusType status;
+
     @OneToMany(mappedBy = "dataSet", cascade = CascadeType.ALL)
     private List<DataPointEntity> dataPoints;
 

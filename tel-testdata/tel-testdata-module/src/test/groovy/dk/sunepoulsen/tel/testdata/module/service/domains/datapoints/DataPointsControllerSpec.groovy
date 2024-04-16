@@ -11,14 +11,12 @@ import spock.lang.Specification
 
 class DataPointsControllerSpec extends Specification {
 
-    private DataPointDataSetPersistence persistence
-    private DataPointsTransformations transformations
+    private DataPointsLogicService logicService
     private DataPointsController sut
 
     void setup() {
-        this.persistence = Mock(DataPointDataSetPersistence)
-        this.transformations = Mock(DataPointsTransformations)
-        this.sut = new DataPointsController(this.persistence, this.transformations)
+        this.logicService = Mock(DataPointsLogicService)
+        this.sut = new DataPointsController(this.logicService)
     }
 
     void "Create new Data Point Dataset successfully"() {
@@ -27,17 +25,9 @@ class DataPointsControllerSpec extends Specification {
                 name: 'name'
             )
 
-        and: 'mocked database entities'
-            DataPointDataSetEntity inputEntity = new DataPointDataSetEntity(
-                id: 3
-            )
-            DataPointDataSetEntity outputEntity = new DataPointDataSetEntity(
-                id: 7
-            )
-
         and: 'mocked model result'
             DataPointDataSet resultDataset = new DataPointDataSet(
-                id: outputEntity.id
+                id: 7
             )
 
         when: 'call endpoint to create dataset'
@@ -47,20 +37,13 @@ class DataPointsControllerSpec extends Specification {
             noExceptionThrown()
             result.id == resultDataset.id
 
-            1 * this.transformations.toEntity(model) >> { inputEntity }
-            1 * this.persistence.create(inputEntity) >> { outputEntity }
-            1 * this.transformations.toModel(outputEntity) >> { resultDataset }
+            1 * this.logicService.create(model) >> { resultDataset }
     }
 
     void "Create new Data Point Dataset resulting in a logic failure"() {
         given: 'a data point dataset'
             DataPointDataSet model = new DataPointDataSet(
                 name: 'name'
-            )
-
-        and: 'mocked database entities'
-            DataPointDataSetEntity inputEntity = new DataPointDataSetEntity(
-                id: 3
             )
 
         when: 'call endpoint to create dataset'
@@ -72,11 +55,9 @@ class DataPointsControllerSpec extends Specification {
             ex.serviceError.param == 'param'
             ex.serviceError.message == 'message'
 
-            1 * this.transformations.toEntity(model) >> { inputEntity }
-            1 * this.persistence.create(inputEntity) >> {
+            1 * this.logicService.create(model) >> {
                 throw new DuplicateResourceException('code', 'param', 'message')
             }
-            0 * this.transformations.toModel(_)
     }
 
 }

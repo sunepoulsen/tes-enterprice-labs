@@ -4,6 +4,7 @@ import dk.sunepoulsen.tel.testdata.module.integrator.TelTestDataIntegrator
 import dk.sunepoulsen.tel.testdata.module.integrator.TelTestDataTestsIntegrator
 import dk.sunepoulsen.tel.testdata.module.integrator.model.DataPointDataSet
 import dk.sunepoulsen.tel.testdata.module.integrator.model.DataPointDataSetConstraints
+import dk.sunepoulsen.tel.testdata.module.integrator.model.DataPointDataSetStatus
 import dk.sunepoulsen.tes.docker.containers.TESBackendContainer
 import dk.sunepoulsen.tes.rest.integrations.exceptions.ClientBadRequestException
 import dk.sunepoulsen.tes.rest.models.RangeModel
@@ -51,6 +52,7 @@ class DataPointDataSetSpec extends Specification {
             result.name == dataset.name
             result.description == dataset.description
             result.constraints == dataset.constraints
+            result.status == DataPointDataSetStatus.NEW
     }
 
     void "POST /datasets/data-points: BAD REQUEST"() {

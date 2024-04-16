@@ -29,6 +29,7 @@ sequenceDiagram
     actor Caller
     participant SprintBoot as Spring Boot
     participant Controller
+    participant Logic as Logic Service
     participant Persistence
     participant Repository as Spring Boot<br/>Repository
 
@@ -36,11 +37,13 @@ sequenceDiagram
     SprintBoot ->> SprintBoot: Validation
 
     SprintBoot ->>+ Controller: createDataPointDataSet(DataPointDataSet)
-    Controller ->>+ Persistence: create(DataPointDataSetEntity)
+    Controller ->>+ Logic: create(DataPointDataSetEntity)
+    Logic ->>+ Persistence: create(DataPointDataSetEntity)
     Persistence ->>+ Repository: save(DataPointDataSetEntity)
     Repository ->> Repository: Update time columns
     Repository ->>- Persistence: Created DataPointDataSetEntity
-    Persistence -->>- Controller: DataPointDataSetEntity
+    Persistence -->>- Logic: DataPointDataSetEntity
+    Logic -->>- Controller: DataPointDataSetEntity
     Controller -->>- SprintBoot: Created DataPointDataSet 
 
     SprintBoot -->>- Caller: Response: ACCEPTED    
