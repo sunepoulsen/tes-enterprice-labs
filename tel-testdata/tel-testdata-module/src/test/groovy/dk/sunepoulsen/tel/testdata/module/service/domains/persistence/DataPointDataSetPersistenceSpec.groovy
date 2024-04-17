@@ -13,13 +13,16 @@ import spock.lang.Specification
 class DataPointDataSetPersistenceSpec extends Specification {
 
     @Autowired
+    private TestsPersistence testsPersistence
+
+    @Autowired
     private DataPointDataSetPersistence persistence
 
     @Autowired
     private DataPointDataSetRepository repository
 
     void setup() {
-        this.repository.deleteAll()
+        testsPersistence.clearDatabase()
     }
 
     void "Create new data point data set"() {
