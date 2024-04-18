@@ -21,7 +21,9 @@ class DataPointsController implements DataPointsOperations {
     @PostMapping
     public DataPointDataSet createDataPointDataSet(DataPointDataSet dataPointDataSet) {
         try {
-            return this.logicService.create(dataPointDataSet);
+            DataPointDataSet result = this.logicService.create(dataPointDataSet);
+            this.logicService.generateDataPoints(result);
+            return result;
         } catch (LogicException ex) {
             throw ex.mapApiException();
         }

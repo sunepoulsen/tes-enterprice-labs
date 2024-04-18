@@ -38,6 +38,7 @@ class DataPointsControllerSpec extends Specification {
             result.id == resultDataset.id
 
             1 * this.logicService.create(model) >> { resultDataset }
+            1 * this.logicService.generateDataPoints(resultDataset)
     }
 
     void "Create new Data Point Dataset resulting in a logic failure"() {
@@ -58,6 +59,7 @@ class DataPointsControllerSpec extends Specification {
             1 * this.logicService.create(model) >> {
                 throw new DuplicateResourceException('code', 'param', 'message')
             }
+            0 * this.logicService.generateDataPoints(_)
     }
 
 }
