@@ -10,11 +10,13 @@ import spock.lang.Specification
 class DataPointsControllerSpec extends Specification {
 
     private DataPointsLogicService logicService
+    private DataPointsGeneratorService dataPointsGeneratorService;
     private DataPointsController sut
 
     void setup() {
         this.logicService = Mock(DataPointsLogicService)
-        this.sut = new DataPointsController(this.logicService)
+        this.dataPointsGeneratorService = Mock(DataPointsGeneratorService)
+        this.sut = new DataPointsController(this.logicService, this.dataPointsGeneratorService)
     }
 
     void "Create new Data Point Dataset successfully"() {
@@ -36,7 +38,7 @@ class DataPointsControllerSpec extends Specification {
             result.id == resultDataset.id
 
             1 * this.logicService.create(model) >> { resultDataset }
-            1 * this.logicService.generateDataPoints(resultDataset)
+            1 * this.dataPointsGeneratorService.generateDataPoints(resultDataset)
     }
 
     void "Create new Data Point Dataset resulting in a logic failure"() {
@@ -57,7 +59,7 @@ class DataPointsControllerSpec extends Specification {
             1 * this.logicService.create(model) >> {
                 throw new DuplicateResourceException('code', 'param', 'message')
             }
-            0 * this.logicService.generateDataPoints(_)
+            0 * this.dataPointsGeneratorService.generateDataPoints(_)
     }
 
     void "Get data set of data points: Success"() {

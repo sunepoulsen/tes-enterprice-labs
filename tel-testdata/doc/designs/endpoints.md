@@ -30,6 +30,7 @@ sequenceDiagram
     participant SprintBoot as Spring Boot
     participant Controller
     participant Logic as Logic Service
+    participant DataPointsGenerator as Data Points <br/>Generator Service
     participant Persistence
     participant Repository as Spring Boot<br/>Repository
 
@@ -47,17 +48,17 @@ sequenceDiagram
         Controller -->>- SprintBoot: Created DataPointDataSet
         SprintBoot -->>- Caller: Response: ACCEPTED
     and Generate data points
-        SprintBoot ->>+ Logic: generateDataPoints
-        Logic ->>+ Persistence: updateStatus(IN_PROGRESS)
-        Persistence -->>- Logic: void
-        Logic ->>+ Persistence: createDataPoints(DataPoint*)
+        SprintBoot ->>+ DataPointsGenerator: generateDataPoints
+        DataPointsGenerator ->>+ Persistence: updateStatus(IN_PROGRESS)
+        Persistence -->>- DataPointsGenerator: void
+        DataPointsGenerator ->>+ Persistence: createDataPoints(DataPoint*)
         Persistence ->>+ Repository: saveAll(DataPointEntity*)
         Repository ->> Repository: Update time columns
         Repository ->>- Persistence: void
-        Persistence -->>- Logic: void
-        Logic ->>+ Persistence: updateStatus(COMPLETED)
-        Persistence -->>- Logic: void
-        Logic -->>- SprintBoot: void
+        Persistence -->>- DataPointsGenerator: void
+        DataPointsGenerator ->>+ Persistence: updateStatus(COMPLETED)
+        Persistence -->>- DataPointsGenerator: void
+        DataPointsGenerator -->>- SprintBoot: void
     end
 ```
 

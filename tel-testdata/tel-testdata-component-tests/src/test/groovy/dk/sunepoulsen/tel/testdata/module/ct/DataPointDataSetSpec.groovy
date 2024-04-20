@@ -11,7 +11,7 @@ import dk.sunepoulsen.tes.rest.integrations.exceptions.ClientNotFoundException
 import dk.sunepoulsen.tes.rest.models.RangeModel
 import dk.sunepoulsen.tes.rest.models.ServiceValidationError
 import dk.sunepoulsen.tes.rest.models.ServiceValidationErrorModel
-import dk.sunepoulsen.tes.springboot.rest.logic.Waits
+import dk.sunepoulsen.tes.utils.Waits
 import spock.lang.Specification
 
 /**

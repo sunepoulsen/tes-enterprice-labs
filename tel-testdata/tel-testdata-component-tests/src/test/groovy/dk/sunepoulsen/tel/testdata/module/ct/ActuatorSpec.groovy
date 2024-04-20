@@ -1,20 +1,10 @@
 package dk.sunepoulsen.tel.testdata.module.ct
 
-import dk.sunepoulsen.tes.rest.models.monitoring.ServiceHealth
-import dk.sunepoulsen.tes.rest.models.monitoring.ServiceHealthStatusCode
-import dk.sunepoulsen.tes.rest.models.monitoring.ServiceInfo
-import dk.sunepoulsen.tes.rest.models.monitoring.ServiceInfoApp
-import dk.sunepoulsen.tes.rest.models.monitoring.ServiceInfoService
+import dk.sunepoulsen.tes.rest.models.monitoring.*
+import dk.sunepoulsen.tes.utils.PropertyResource
 import spock.lang.Specification
 
 class ActuatorSpec extends Specification {
-
-    private String moduleVersion
-
-    void setup() {
-        Properties deploymentProperties = DeploymentSpockExtension.loadDeploymentProperties()
-        moduleVersion = deploymentProperties.getProperty('module.version')
-    }
 
     void "GET /actuator/health returns OK"() {
         given: 'Service is available'
@@ -40,7 +30,7 @@ class ActuatorSpec extends Specification {
             result == new ServiceInfo(
                 app: new ServiceInfoApp(
                     name: 'TES Enterprise Labs TestData Module',
-                    version: moduleVersion,
+                    version: PropertyResource.readProperty('/deployment.properties', 'module.version'),
                     service: new ServiceInfoService(
                         name: 'tel-testdata-module'
                     )
