@@ -1,12 +1,10 @@
 package dk.sunepoulsen.tel.testdata.module.service.domains.datapoints
 
 import dk.sunepoulsen.tel.testdata.module.integrator.model.DataPointDataSet
-import dk.sunepoulsen.tel.testdata.module.integrator.model.DataPointDataSetConstraints
-import dk.sunepoulsen.tel.testdata.module.service.domains.persistence.DataPointDataSetPersistence
-import dk.sunepoulsen.tel.testdata.module.service.domains.persistence.model.DataPointDataSetEntity
-import dk.sunepoulsen.tes.rest.models.RangeModel
 import dk.sunepoulsen.tes.springboot.rest.exceptions.ApiConflictException
+import dk.sunepoulsen.tes.springboot.rest.exceptions.ApiNotFoundException
 import dk.sunepoulsen.tes.springboot.rest.logic.exceptions.DuplicateResourceException
+import dk.sunepoulsen.tes.springboot.rest.logic.exceptions.ResourceNotFoundException
 import spock.lang.Specification
 
 class DataPointsControllerSpec extends Specification {
@@ -31,7 +29,7 @@ class DataPointsControllerSpec extends Specification {
             )
 
         when: 'call endpoint to create dataset'
-            DataPointDataSet result = sut.createDataPointDataSet(model)
+            DataPointDataSet result = sut.create(model)
 
         then: 'verify that the dataset is created successfully'
             noExceptionThrown()
@@ -48,7 +46,7 @@ class DataPointsControllerSpec extends Specification {
             )
 
         when: 'call endpoint to create dataset'
-            sut.createDataPointDataSet(model)
+            sut.create(model)
 
         then: 'verify that the dataset is created successfully'
             ApiConflictException ex = thrown(ApiConflictException)
@@ -60,6 +58,38 @@ class DataPointsControllerSpec extends Specification {
                 throw new DuplicateResourceException('code', 'param', 'message')
             }
             0 * this.logicService.generateDataPoints(_)
+    }
+
+    void "Get data set of data points: Success"() {
+        when: 'call endpoint to get dataset'
+            DataPointDataSet result = sut.get(17L)
+
+        then: 'verify that the dataset is returned successfully'
+            noExceptionThrown()
+            result.id == 17L
+            result.name == 'name'
+
+            1 * this.logicService.get(17L) >> {
+                new DataPointDataSet(
+                    id: 17L,
+                    name: 'name'
+                )
+            }
+    }
+
+    void "Get data set of data points: Not found"() {
+        when: 'call endpoint to get dataset'
+            sut.get(17L)
+
+        then: 'verify that the dataset is returned successfully'
+            ApiNotFoundException ex = thrown(ApiNotFoundException)
+            ex.serviceError.code == 'code'
+            ex.serviceError.param == 'param'
+            ex.serviceError.message == 'message'
+
+            1 * this.logicService.get(17L) >> {
+                throw new ResourceNotFoundException('code', 'param', 'message')
+            }
     }
 
 }

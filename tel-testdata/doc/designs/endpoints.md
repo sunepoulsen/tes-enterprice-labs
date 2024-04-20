@@ -35,8 +35,7 @@ sequenceDiagram
 
     Caller ->>+ SprintBoot: Request
     SprintBoot ->> SprintBoot: Validation
-
-    SprintBoot ->>+ Controller: createDataPointDataSet(DataPointDataSet)
+    SprintBoot ->>+ Controller: create(DataPointDataSet)
     Controller ->>+ Logic: create(DataPointDataSetEntity)
     Logic ->>+ Persistence: create(DataPointDataSetEntity)
     Persistence ->>+ Repository: save(DataPointDataSetEntity)
@@ -44,7 +43,51 @@ sequenceDiagram
     Repository ->>- Persistence: Created DataPointDataSetEntity
     Persistence -->>- Logic: DataPointDataSetEntity
     Logic -->>- Controller: DataPointDataSetEntity
-    Controller -->>- SprintBoot: Created DataPointDataSet 
+    par Return response
+        Controller -->>- SprintBoot: Created DataPointDataSet
+        SprintBoot -->>- Caller: Response: ACCEPTED
+    and Generate data points
+        SprintBoot ->>+ Logic: generateDataPoints
+        Logic ->>+ Persistence: updateStatus(IN_PROGRESS)
+        Persistence -->>- Logic: void
+        Logic ->>+ Persistence: createDataPoints(DataPoint*)
+        Persistence ->>+ Repository: saveAll(DataPointEntity*)
+        Repository ->> Repository: Update time columns
+        Repository ->>- Persistence: void
+        Persistence -->>- Logic: void
+        Logic ->>+ Persistence: updateStatus(COMPLETED)
+        Persistence -->>- Logic: void
+        Logic -->>- SprintBoot: void
+    end
+```
 
-    SprintBoot -->>- Caller: Response: ACCEPTED    
+### Get data sets of data points
+
+Data set of data points can be received with this endpoint:
+
+```
+GET /datasets/data-points/{id}
+```
+
+Retrieving a dataset of data points are done like this:
+
+```mermaid
+sequenceDiagram
+    actor Caller
+    participant SprintBoot as Spring Boot
+    participant Controller
+    participant Logic as Logic Service
+    participant Persistence
+    participant Repository as Spring Boot<br/>Repository
+    Caller ->>+ SprintBoot: Request
+    SprintBoot ->> SprintBoot: Validation
+    SprintBoot ->>+ Controller: get(Long)
+    Controller ->>+ Logic: get(Long)
+    Logic ->>+ Persistence: get(Long)
+    Persistence ->>+ Repository: findById(Long)
+    Repository ->>- Persistence: DataPointDataSetEntity
+    Persistence -->>- Logic: DataPointDataSetEntity
+    Logic -->>- Controller: DataPointDataSet
+    Controller -->>- SprintBoot: DataPointDataSet
+    SprintBoot -->>- Caller: Response: OK
 ```

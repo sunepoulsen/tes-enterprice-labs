@@ -10,6 +10,7 @@ import dk.sunepoulsen.tel.testdata.module.service.domains.persistence.model.Data
 import dk.sunepoulsen.tel.testdata.module.service.domains.persistence.model.DataPointsDataSetStatusType
 import dk.sunepoulsen.tes.rest.models.RangeModel
 import dk.sunepoulsen.tes.springboot.rest.logic.exceptions.DuplicateResourceException
+import dk.sunepoulsen.tes.springboot.rest.logic.exceptions.ResourceNotFoundException
 import spock.lang.Specification
 
 class DataPointsLogicServiceSpec extends Specification {
@@ -72,6 +73,44 @@ class DataPointsLogicServiceSpec extends Specification {
             1 * this.transformations.toModel(outputEntity) >> { resultDataset }
     }
 
+    void "Get a dataset of data points: Successfully"() {
+        given: 'a data point dataset'
+            DataPointDataSet dataSet = new DataPointDataSet(
+                name: 'name'
+            )
+
+        and: 'mocked database entity'
+            DataPointDataSetEntity foundEntity = new DataPointDataSetEntity(
+                name: 'name'
+            )
+
+        when: 'call endpoint to create dataset'
+            DataPointDataSet result = sut.get(1L)
+
+        then: 'verify that the dataset is created successfully'
+            noExceptionThrown()
+            result.id == dataSet.id
+
+            1 * this.dataSetPersistence.get(1L) >> { foundEntity }
+            1 * this.transformations.toModel(foundEntity) >> { dataSet }
+    }
+
+    void "Get a dataset of data points: Not found"() {
+        when: 'call endpoint to get dataset'
+            sut.get(1L)
+
+        then: 'verify that the dataset is created successfully'
+            ResourceNotFoundException ex = thrown(ResourceNotFoundException)
+            ex.code == 'code'
+            ex.param == 'param'
+            ex.message == 'message'
+
+            1 * this.dataSetPersistence.get(1L) >> {
+                throw new ResourceNotFoundException('code', 'param', 'message')
+            }
+            0 * this.transformations.toModel(_)
+    }
+
     void "Create new Data Point Dataset resulting in a logic failure"() {
         given: 'a data point dataset'
             DataPointDataSet model = new DataPointDataSet(
@@ -99,7 +138,7 @@ class DataPointsLogicServiceSpec extends Specification {
             0 * this.transformations.toModel(_)
     }
 
-    void "Generate data points successfully"() {
+    void "Generate data points: Success"() {
         given: 'A data set of data points'
             DataPointDataSet model = new DataPointDataSet(
                 id: 5L,
@@ -116,24 +155,36 @@ class DataPointsLogicServiceSpec extends Specification {
 
         then:
             1 * dataSetPersistence.updateStatus(model.id, DataPointsDataSetStatusType.IN_PROGRESS)
-            1 * dataSetPersistence.get(model.id) >> {
-                Optional.of(new DataPointDataSetEntity(
-                    id: 5L,
-                    name: model.name,
-                    description: model.description,
-                    dataPoints: []
-                ))
-            }
-
+            1 * dataSetPersistence.exists(model.id) >> { true }
             1 * dataPointPersistence.createDataPoints(_, _) >> { arguments ->
                 capturedModelId = arguments[0]
                 capturedDataPoints = arguments[1]
             }
             capturedModelId == model.id
             capturedDataPoints.size() >= model.constraints.quantity.min
-            capturedDataPoints.size() < model.constraints.quantity.max
+            capturedDataPoints.size() <= model.constraints.quantity.max
 
             1 * dataSetPersistence.updateStatus(model.id, DataPointsDataSetStatusType.COMPLETED)
+    }
+
+    void "Generate data points: Dataset not found"() {
+        given: 'A data set of data points'
+            DataPointDataSet model = new DataPointDataSet(
+                id: 5L,
+                name: 'name',
+                description: 'description',
+                constraints: CONSTRAINTS
+            )
+
+        when:
+            sut.generateDataPoints(model)
+
+        then:
+            noExceptionThrown()
+            1 * dataSetPersistence.updateStatus(model.id, DataPointsDataSetStatusType.IN_PROGRESS)
+            1 * dataSetPersistence.exists(model.id) >> { false }
+            0 * dataPointPersistence.createDataPoints(_, _)
+            0 * dataSetPersistence.updateStatus(model.id, _)
     }
 
 }

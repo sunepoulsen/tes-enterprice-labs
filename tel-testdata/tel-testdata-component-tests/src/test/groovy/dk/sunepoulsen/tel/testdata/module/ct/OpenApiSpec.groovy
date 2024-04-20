@@ -50,13 +50,14 @@ OAS 3.0''')
             openApiVerifier.verifyEndpoint(_id, _method, _path)
 
         where:
-            _id                                  | _method  | _path
-            'Actuator-links'                     | 'GET'    | '/actuator'
-            'Actuator-info'                      | 'GET'    | '/actuator/info'
-            'Actuator-health'                    | 'GET'    | '/actuator/health'
-            'Actuator-health-path'               | 'GET'    | '/actuator/health/**'
-            'Data_Points-createDataPointDataSet' | 'POST'   | '/datasets/data-points'
-            'Tests-deletePersistence'            | 'DELETE' | '/tests/persistence'
+            _id                       | _method  | _path
+            'Actuator-links'          | 'GET'    | '/actuator'
+            'Actuator-info'           | 'GET'    | '/actuator/info'
+            'Actuator-health'         | 'GET'    | '/actuator/health'
+            'Actuator-health-path'    | 'GET'    | '/actuator/health/**'
+            'Data_Points-create'      | 'POST'   | '/datasets/data-points'
+            'Data_Points-get'         | 'GET'    | '/datasets/data-points/{id}'
+            'Tests-deletePersistence' | 'DELETE' | '/tests/persistence'
     }
 
 }

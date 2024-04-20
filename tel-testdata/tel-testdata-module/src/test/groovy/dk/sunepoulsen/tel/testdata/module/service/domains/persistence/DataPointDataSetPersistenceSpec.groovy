@@ -3,6 +3,7 @@ package dk.sunepoulsen.tel.testdata.module.service.domains.persistence
 import dk.sunepoulsen.tel.testdata.module.service.domains.persistence.model.DataPointDataSetEntity
 import dk.sunepoulsen.tel.testdata.module.service.domains.persistence.model.DataPointsDataSetStatusType
 import dk.sunepoulsen.tel.testdata.module.service.domains.persistence.model.DataSetType
+import dk.sunepoulsen.tes.springboot.rest.logic.exceptions.ResourceNotFoundException
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -46,6 +47,60 @@ class DataPointDataSetPersistenceSpec extends Specification {
             result.type == DataSetType.DATA_POINTS
             result.createDateTime
             result.updateDateTime
+    }
+
+    void "Get data set of data points that exists"() {
+        given:
+            DataPointDataSetEntity dataSet = this.persistence.create(new DataPointDataSetEntity(
+                name: 'name',
+                description: 'description',
+                minX: 5.0,
+                maxX: 15.0,
+                minY: 5.0,
+                maxY: 15.0,
+                minQuantity: 20,
+                maxQuantity: 2000,
+                status: DataPointsDataSetStatusType.NEW
+            ))
+
+        when:
+            DataPointDataSetEntity result = this.persistence.get(dataSet.id)
+
+        then:
+            result.id == dataSet.id
+    }
+
+    void "Get data set of data points that does not exists"() {
+        when:
+            this.persistence.get(1L)
+
+        then:
+            ResourceNotFoundException ex = thrown(ResourceNotFoundException)
+            ex.param == 'id'
+            ex.message == 'No data sets of data points exists with the given id'
+    }
+
+    void "Get data set of data points that exists"() {
+        given:
+            DataPointDataSetEntity dataSet = this.persistence.create(new DataPointDataSetEntity(
+                name: 'name',
+                description: 'description',
+                minX: 5.0,
+                maxX: 15.0,
+                minY: 5.0,
+                maxY: 15.0,
+                minQuantity: 20,
+                maxQuantity: 2000,
+                status: DataPointsDataSetStatusType.NEW
+            ))
+
+        expect:
+            this.persistence.exists(dataSet.id)
+    }
+
+    void "Get data set of data points that does not exists"() {
+        expect:
+            !this.persistence.exists(1L)
     }
 
     void "Update status of a data set of data points"() {

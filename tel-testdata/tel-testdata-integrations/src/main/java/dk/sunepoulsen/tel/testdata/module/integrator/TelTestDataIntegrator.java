@@ -16,4 +16,9 @@ public class TelTestDataIntegrator extends TechEasySolutionsBackendIntegrator {
             .onErrorResumeNext(this::mapClientExceptions);
     }
 
+    public Single<DataPointDataSet> get(Long id) {
+        return Single.fromFuture(this.httpClient.get("/datasets/data-points/" + id.toString(), DataPointDataSet.class))
+            .onErrorResumeNext(this::mapClientExceptions);
+    }
+
 }
