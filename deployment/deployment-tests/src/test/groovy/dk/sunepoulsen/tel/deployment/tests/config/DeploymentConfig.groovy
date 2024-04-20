@@ -1,5 +1,8 @@
 package dk.sunepoulsen.tel.deployment.tests.config
 
+import dk.sunepoulsen.tes.utils.PropertyResource
+import dk.sunepoulsen.tes.utils.Resources
+
 import java.time.Duration
 
 class DeploymentConfig {
@@ -66,16 +69,15 @@ class DeploymentConfig {
     }
 
     private void readProfile() {
-        Properties props = new Properties()
-        props.load(getClass().getResourceAsStream("/deployment-${profile}.properties"))
+        PropertyResource deploymentProperties = new PropertyResource(Resources.readResource("/deployment-${profile}.properties"))
 
-        this.moduleVersion = props.getProperty('version')
-        this.envEnabled = Boolean.parseBoolean(props.getProperty('env.endpoint.enabled'))
-        this.metricsEnabled = Boolean.parseBoolean(props.getProperty('metrics.endpoint.enabled'))
-        this.telTestDataUrl = new URI(props.getProperty('tel-testdata.url'))
-        this.telWebUrl = new URI(props.getProperty('tel-web.url'))
-        this.certificateFile = new File(props.getProperty('ssl.key-store'))
-        this.certificatePassword = props.getProperty('ssl.key-store-password')
-        this.waitDuration = Duration.parse(props.getProperty('wait.duration'))
+        this.moduleVersion = deploymentProperties.property('version')
+        this.envEnabled = Boolean.parseBoolean(deploymentProperties.property('env.endpoint.enabled'))
+        this.metricsEnabled = Boolean.parseBoolean(deploymentProperties.property('metrics.endpoint.enabled'))
+        this.telTestDataUrl = new URI(deploymentProperties.property('tel-testdata.url'))
+        this.telWebUrl = new URI(deploymentProperties.property('tel-web.url'))
+        this.certificateFile = new File(deploymentProperties.property('ssl.key-store'))
+        this.certificatePassword = deploymentProperties.property('ssl.key-store-password')
+        this.waitDuration = Duration.parse(deploymentProperties.property('wait.duration'))
     }
 }

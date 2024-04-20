@@ -2,6 +2,8 @@ package dk.sunepoulsen.tel.web.module.ct
 
 import dk.sunepoulsen.tes.docker.containers.ClasspathPropertiesDockerImageProvider
 import dk.sunepoulsen.tes.docker.containers.DockerImageProvider
+import dk.sunepoulsen.tes.utils.PropertyResource
+import dk.sunepoulsen.tes.utils.Resources
 import groovy.util.logging.Slf4j
 import org.spockframework.runtime.extension.IGlobalExtension
 import org.spockframework.runtime.model.SpecInfo
@@ -14,13 +16,7 @@ import org.testcontainers.utility.MountableFile
 class DeploymentSpockExtension implements IGlobalExtension {
     private static GenericContainer telWebContainer = null
     private DockerImageProvider dockerImageProvider = new ClasspathPropertiesDockerImageProvider('/deployment.properties', 'tel-web')
-    private static Properties deploymentProperties = loadDeploymentProperties()
-
-    static Properties loadDeploymentProperties() {
-        Properties props = new Properties()
-        props.load(DeploymentSpockExtension.class.getResourceAsStream('/deployment.properties') )
-        return props
-    }
+    private static PropertyResource deploymentProperties = new PropertyResource(Resources.readResource('/deployment.properties'))
 
     DeploymentSpockExtension() {
     }
@@ -40,9 +36,9 @@ class DeploymentSpockExtension implements IGlobalExtension {
         log.debug("Current directory: {}", new File(".").absolutePath)
         telWebContainer = new GenericContainer(this.dockerImageProvider.dockerImageName())
             .withExposedPorts(new Integer[]{443})
-            .withCopyFileToContainer(MountableFile.forHostPath(deploymentProperties.getProperty('certificate.pem.file')), "/var/lib/nginx/tes-enterprise-labs.pem")
-            .withCopyFileToContainer(MountableFile.forHostPath(deploymentProperties.getProperty('certificate.key.file')), "/var/lib/nginx/tes-enterprise-labs.key")
-            .withCopyFileToContainer(MountableFile.forHostPath(deploymentProperties.getProperty('certificate.passwords.file')), "/var/lib/nginx/tes-enterprise-labs-passwords.txt")
+            .withCopyFileToContainer(MountableFile.forHostPath(deploymentProperties.property('certificate.pem.file')), "/var/lib/nginx/tes-enterprise-labs.pem")
+            .withCopyFileToContainer(MountableFile.forHostPath(deploymentProperties.property('certificate.key.file')), "/var/lib/nginx/tes-enterprise-labs.key")
+            .withCopyFileToContainer(MountableFile.forHostPath(deploymentProperties.property('certificate.passwords.file')), "/var/lib/nginx/tes-enterprise-labs-passwords.txt")
             .waitingFor(Wait.forHttps("/").allowInsecure().forStatusCode(200))
             .withNetwork(network)
         telWebContainer.start()

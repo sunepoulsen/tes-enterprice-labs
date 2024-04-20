@@ -15,6 +15,7 @@ dependencies {
     testImplementation 'dk.sunepoulsen.tes-foundation:tes-docker-containers:2.0.0-SNAPSHOT'
     testImplementation 'dk.sunepoulsen.tes-foundation:tes-security:2.0.0-SNAPSHOT'
     testImplementation 'dk.sunepoulsen.tes-foundation:tes-selenium:2.0.0-SNAPSHOT'
+    testImplementation 'dk.sunepoulsen.tes-foundation:tes-utils:2.0.0-SNAPSHOT'
 
     // Lombok
     testCompileOnly 'org.projectlombok:lombok:1.18.32'

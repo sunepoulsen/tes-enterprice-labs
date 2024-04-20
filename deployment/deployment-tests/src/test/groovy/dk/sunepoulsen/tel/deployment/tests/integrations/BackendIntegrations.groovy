@@ -7,10 +7,11 @@ import dk.sunepoulsen.tes.rest.integrations.config.DefaultClientConfig
 import dk.sunepoulsen.tes.rest.integrations.config.TechEasySolutionsClientConfig
 import dk.sunepoulsen.tes.rest.models.monitoring.ServiceHealthStatusCode
 import dk.sunepoulsen.tes.security.net.ssl.SSLContextFactory
+import dk.sunepoulsen.tes.utils.Waits
 import groovy.util.logging.Slf4j
 
 import javax.net.ssl.SSLContext
-import java.net.http.HttpClient
+import java.util.concurrent.TimeoutException
 
 @Slf4j
 class BackendIntegrations {
@@ -34,21 +35,16 @@ class BackendIntegrations {
 
     void waitFor(TechEasySolutionsBackendIntegrator integrator) {
         long start = System.currentTimeMillis()
-        long end = System.currentTimeMillis()
-
-        while((end - start) < config.waitDuration.toMillis()) {
-            try {
-                if (integrator.health().blockingGet().status == ServiceHealthStatusCode.UP) {
-                    log.info('{} was available in {} seconds', integrator.httpClient.uri.toString(), Math.floorDiv(end - start, 1000) + 1)
-                    return
-                }
-            } catch( Exception ignored ) {
-            }
-
-            Thread.sleep(200)
-            end = System.currentTimeMillis()
+        boolean isAvailable = Waits.waitFor(config.waitDuration, Waits.DEFAULT_SLEEP_DURATION) {
+            integrator.health().blockingGet().status == ServiceHealthStatusCode.UP
         }
 
-        log.error('Unable to connect to {} after {} seconds', integrator.httpClient.uri.toString(), config.waitDuration.toSeconds())
+        if (isAvailable) {
+            long end = System.currentTimeMillis()
+            log.info('{} is available in {} seconds', integrator.httpClient.uri.toString(), Math.floorDiv(end - start, 1000) + 1)
+            return
+        }
+
+        throw new TimeoutException("The service ${integrator.httpClient.uri.toString()} was not available with in ${config.waitDuration.toSeconds()} seconds")
     }
 }

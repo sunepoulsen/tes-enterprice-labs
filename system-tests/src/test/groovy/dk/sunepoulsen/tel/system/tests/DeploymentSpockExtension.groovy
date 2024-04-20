@@ -9,13 +9,14 @@ import dk.sunepoulsen.tes.rest.integrations.TechEasySolutionsClient
 import dk.sunepoulsen.tes.rest.integrations.config.DefaultClientConfig
 import dk.sunepoulsen.tes.rest.integrations.config.TechEasySolutionsClientConfig
 import dk.sunepoulsen.tes.security.net.ssl.SSLContextFactory
+import dk.sunepoulsen.tes.utils.PropertyResource
+import dk.sunepoulsen.tes.utils.Resources
 import groovy.util.logging.Slf4j
 import org.spockframework.runtime.extension.IGlobalExtension
 import org.spockframework.runtime.model.SpecInfo
 import org.testcontainers.containers.BindMode
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.Network
-import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.utility.MountableFile
@@ -35,15 +36,9 @@ class DeploymentSpockExtension implements IGlobalExtension {
     private DockerImageProvider telTestDataDockerImageProvider = new ClasspathPropertiesDockerImageProvider('/deployment.properties', 'tel-testdata')
     private DockerImageProvider telWebDockerImageProvider = new ClasspathPropertiesDockerImageProvider('/deployment.properties', 'tel-web')
 
-    private static Properties deploymentProperties = loadDeploymentProperties()
+    private static PropertyResource deploymentProperties = new PropertyResource(Resources.readResource('/deployment.properties'))
 
     DeploymentSpockExtension() {
-    }
-
-    static Properties loadDeploymentProperties() {
-        Properties props = new Properties()
-        props.load(DeploymentSpockExtension.class.getResourceAsStream('/deployment.properties') )
-        return props
     }
 
     static TESBackendContainer telTestDataBackendContainer() {
@@ -51,7 +46,7 @@ class DeploymentSpockExtension implements IGlobalExtension {
     }
 
     static TechEasySolutionsBackendIntegrator telTestDataBackendIntegrator() {
-        SSLContext sslContext = SSLContextFactory.createSSLContext(new File(deploymentProperties.getProperty('ssl.key-store')), deploymentProperties.getProperty('ssl.key-store-password'))
+        SSLContext sslContext = SSLContextFactory.createSSLContext(new File(deploymentProperties.property('ssl.key-store')), deploymentProperties.property('ssl.key-store-password'))
 
         TechEasySolutionsClientConfig clientConfig = new DefaultClientConfig(sslContext)
         TechEasySolutionsClient client = telTestDataBackendContainer.createClient(clientConfig)
@@ -72,7 +67,7 @@ class DeploymentSpockExtension implements IGlobalExtension {
         Network network = Network.newNetwork()
 
         databaseContainer = new GenericContainer<>(databaseDockerImageProvider.dockerImageName())
-            .withEnv('POSTGRES_PASSWORD', deploymentProperties.getProperty('database.super.user.password'))
+            .withEnv('POSTGRES_PASSWORD', deploymentProperties.property('database.super.user.password'))
             .withClasspathResourceMapping('db/001-tel-testdata.sh', '/docker-entrypoint-initdb.d/001-tel-testdata.sh', BindMode.READ_ONLY)
             .waitingFor((new LogMessageWaitStrategy())
                 .withRegEx(".*database system is ready to accept connections.*\\s")
@@ -85,15 +80,15 @@ class DeploymentSpockExtension implements IGlobalExtension {
 
         telTestDataBackendContainer = new TESBackendContainer(telTestDataDockerImageProvider, new TESContainerSecureProtocol(), 'systemtests')
             .withClasspathResourceMapping('/config/tel-testdata/application-systemtests.properties', '/app/resources/application-systemtests.properties', BindMode.READ_ONLY)
-            .withCopyFileToContainer(MountableFile.forHostPath(deploymentProperties.getProperty('ssl.key-store')), "/app/certificates/${deploymentProperties.getProperty('ssl.key-store.filename')}")
+            .withCopyFileToContainer(MountableFile.forHostPath(deploymentProperties.property('ssl.key-store')), "/app/certificates/${deploymentProperties.property('ssl.key-store.filename')}")
             .withNetwork(network)
         telTestDataBackendContainer.start()
 
         telWebContainer = new GenericContainer(telWebDockerImageProvider.dockerImageName())
             .withExposedPorts(new Integer[]{443})
-            .withCopyFileToContainer(MountableFile.forHostPath(deploymentProperties.getProperty('certificate.pem.file')), "/var/lib/nginx/tes-enterprise-labs.pem")
-            .withCopyFileToContainer(MountableFile.forHostPath(deploymentProperties.getProperty('certificate.key.file')), "/var/lib/nginx/tes-enterprise-labs.key")
-            .withCopyFileToContainer(MountableFile.forHostPath(deploymentProperties.getProperty('certificate.passwords.file')), "/var/lib/nginx/tes-enterprise-labs-passwords.txt")
+            .withCopyFileToContainer(MountableFile.forHostPath(deploymentProperties.property('certificate.pem.file')), "/var/lib/nginx/tes-enterprise-labs.pem")
+            .withCopyFileToContainer(MountableFile.forHostPath(deploymentProperties.property('certificate.key.file')), "/var/lib/nginx/tes-enterprise-labs.key")
+            .withCopyFileToContainer(MountableFile.forHostPath(deploymentProperties.property('certificate.passwords.file')), "/var/lib/nginx/tes-enterprise-labs-passwords.txt")
             .waitingFor(Wait.forHttps("/").allowInsecure().forStatusCode(200))
             .withNetwork(network)
         telWebContainer.start()
