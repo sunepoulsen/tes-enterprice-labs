@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+    // The following line allows to load io.gatling.gradle plugin and directly apply it
+    id 'io.gatling.gradle'
+}
+
+gatling {
+    // WARNING: options below only work when logback config file isn't provided
+    logLevel = 'WARN' // logback root level
+    logHttp = 'NONE' // set to 'ALL' for all HTTP traffic in TRACE, 'FAILURES' for failed HTTP traffic in DEBUG
+    enterprise {
+        // Enterprise Cloud (https://cloud.gatling.io/) configuration reference: https://gatling.io/docs/gatling/reference/current/extensions/gradle_plugin/#working-with-gatling-enterprise-cloud
+        // Enterprise Self-Hosted configuration reference: https://gatling.io/docs/gatling/reference/current/extensions/gradle_plugin/#working-with-gatling-enterprise-self-hosted
+    }
+
+    systemProperties = [
+        'stress.tests.profile': System.getProperty('stress.tests.profile')
+    ]
+}
+
+dependencies {
+    // Lombok
+    gatlingCompileOnly 'org.projectlombok:lombok:1.18.32'
+    gatlingAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
+
+    // Logging
+    gatlingImplementation 'ch.qos.logback:logback-core:1.5.5'
+    gatlingImplementation 'ch.qos.logback:logback-classic:1.5.5'
+    gatlingImplementation 'org.slf4j:log4j-over-slf4j:2.0.13'
+
+    // Tech Easy Solutions
+    gatlingImplementation 'dk.sunepoulsen.tes-foundation:tes-docker-containers:2.0.0-SNAPSHOT'
+    gatlingImplementation 'dk.sunepoulsen.tes-foundation:tes-utils:2.0.0-SNAPSHOT'
+
+    gatlingImplementation platform('org.testcontainers:testcontainers-bom:1.19.7')
+    gatlingImplementation 'org.testcontainers:testcontainers'
+}
+
+apply from: "${rootProject.projectDir}/gradle/resources.gradle"

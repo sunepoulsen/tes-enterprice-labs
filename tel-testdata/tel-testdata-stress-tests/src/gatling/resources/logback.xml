@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="LOG_FILE" value="build/logs/gatling-tests.log"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date %level [%thread] %logger{35} - %msg%n</pattern>
+        </encoder>
+        <level>INFO</level>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender" append="false">
+        <file>${LOG_FILE}</file>
+
+        <encoder>
+            <pattern>%date %level [%thread] %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="dk.sunepoulsen.tes" level="DEBUG"/>
+    <logger name="dk.sunepoulsen.tel" level="DEBUG"/>
+
+    <logger name="org.testcontainers" level="INFO" additivity="false">
+        <appender-ref ref="FILE"/>
+    </logger>
+    <logger name="io.gatling" level="INFO" additivity="false">
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <root level="WARN">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>

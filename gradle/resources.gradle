@@ -45,6 +45,9 @@ def resourceProperties = [
     projectBuildDir: "${project.projectDir.absolutePath}/build".toString(),
     version: project.property('version').toString(),
 
+    // Plugin versions
+    gatlingVersion: "$gatlingVersion".toString(),
+
     // Docker Image properties
     telTestDataDockerImageName: project.property('tel-testdata.docker.image.name').toString(),
     telWebDockerImageName: project.property('tel-web.docker.image.name').toString(),
@@ -71,10 +74,20 @@ def resourceProperties = [
     telTestDataApplicationPassword: readPasswordFromSystemPropertyOrFile('tel.database.application.password', 'tel-testdata-application-password.txt'),
 ]
 
-processResources {
-    filter(ReplaceTokens, tokens: resourceProperties)
+if (project.tasks.findByName('processResources') != null) {
+    processResources {
+        filter(ReplaceTokens, tokens: resourceProperties)
+    }
 }
 
-processTestResources {
-    filter(ReplaceTokens, tokens: resourceProperties)
+if (project.tasks.findByName('processTestResources') != null) {
+    processTestResources {
+        filter(ReplaceTokens, tokens: resourceProperties)
+    }
+}
+
+if (project.tasks.findByName('processGatlingResources') != null) {
+    processGatlingResources {
+        filter(ReplaceTokens, tokens: resourceProperties)
+    }
 }

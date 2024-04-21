@@ -19,6 +19,9 @@ echo
 ./pipeline-run-tel-testdata-component-tests.sh
 
 echo
+./pipeline-run-tel-testdata-stress-tests.sh
+
+echo
 ./pipeline-build-tel-web-module.sh
 
 echo

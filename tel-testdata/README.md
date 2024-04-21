@@ -20,3 +20,13 @@ Component Tests are placed in `tel-testdata-component-tests` and can be executed
 ./gradlew :tel-testdata:tel-testdata-component-tests:check -Ptel-testdata-component-tests
 ```
 Component tests are not executed as part of a normal build of the entire solution.
+
+### Stress Tests
+
+Stress Tests are placed in `tel-testdata-stress-tests` and can be executed with:
+
+```
+./gradlew :tel-testdata:tel-testdata-stress-tests:gatlingRun -Dstress.test.profile=<profile>
+```
+
+Stress tests are not executed as part of a normal build of the entire solution.
