@@ -30,5 +30,5 @@ changelog {
     itemPrefix = "-"
     keepUnreleasedSection = true
     unreleasedTerm = "Unreleased work"
-    groups = ["Features", "Fixed", "Development", "Security"]
+    groups = ["Features", "Fixed", "Development", "DevOps", "Security"]
 }

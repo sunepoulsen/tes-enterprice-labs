@@ -31,6 +31,11 @@ For release-dates, use date-format: YYYY-MM-DD
 - [TESENTLABS-27](https://sunepoulsen.atlassian.net/browse/TESENTLABS-27): Manage data sets in tel-testdata
   - Upgrade to Gradle 8.7
 
+### DevOps
+
+- [TESENTLABS-13](https://sunepoulsen.atlassian.net/browse/TESENTLABS-13): Replace pipeline bash scripts with python
+  scripts
+
 ### Security
 
 - [TESENTLABS-37](https://sunepoulsen.atlassian.net/browse/TESENTLABS-37): Creation of docker image of tel-web should 
