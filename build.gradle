@@ -53,11 +53,11 @@ subprojects {
         mavenCentral()
 
         maven {
-            url "${System.properties['maven.repository.base.url']}/${System.properties['maven.repository.snapshots']}"
+            url "$mavenRepositoryBaseUrl/$mavenRepositorySnapshots"
             allowInsecureProtocol = true
         }
         maven {
-            url "${System.properties['maven.repository.base.url']}/${System.properties['maven.repository.releases']}"
+            url "$mavenRepositoryBaseUrl/$mavenRepositoryReleases"
             allowInsecureProtocol = true
         }
     }
