@@ -61,17 +61,17 @@ pipeline {
             parallel {
                 stage('TEL TestData Component Tests') {
                     steps {
-                        sh './pipeline-run-tel-testdata-component-tests.py'
+                        sh './pipelines/pipeline-run-tel-testdata-component-tests.py'
                     }
                 }
                 stage('TEL Web Component Tests') {
                     steps {
-                        sh './pipeline-run-tel-web-component-tests.py'
+                        sh './pipelines/pipeline-run-tel-web-component-tests.py'
                     }
                 }
                 stage('System Tests') {
                     steps {
-                        sh './pipeline-run-system-tests.py'
+                        sh './pipelines/pipeline-run-system-tests.py'
                     }
                 }
                 stage('Analyze') {
