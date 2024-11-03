@@ -23,7 +23,7 @@ tasks.register('buildImage') {
         }
         exec {
             workingDir distBuildDir
-            commandLine 'docker', 'buildx', 'build', '-t', "${imageName}:${imageTag}", '.'
+            commandLine 'docker', 'build', '-t', "${imageName}:${imageTag}", '.'
         }
         exec {
             workingDir distBuildDir
