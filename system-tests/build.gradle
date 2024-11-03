@@ -17,22 +17,22 @@ dependencies {
     testImplementation 'dk.sunepoulsen.tes-foundation:tes-selenium:2.0.0-SNAPSHOT'
 
     // Lombok
-    testCompileOnly 'org.projectlombok:lombok:1.18.32'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
+    testCompileOnly 'org.projectlombok:lombok:1.18.34'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
 
     // Logging
-    testImplementation 'ch.qos.logback:logback-classic:1.5.5'
-    testImplementation 'org.slf4j:log4j-over-slf4j:2.0.13'
+    testImplementation 'ch.qos.logback:logback-classic:1.5.12'
+    testImplementation 'org.slf4j:log4j-over-slf4j:2.0.16'
 
-    testImplementation platform('org.testcontainers:testcontainers-bom:1.19.7')
+    testImplementation platform('org.testcontainers:testcontainers-bom:1.20.3')
     testImplementation 'org.testcontainers:testcontainers'
     testImplementation 'org.testcontainers:postgresql'
 
     // Spock
-    testImplementation 'org.apache.groovy:groovy-all:4.0.21'
+    testImplementation 'org.apache.groovy:groovy-all:4.0.23'
     testImplementation 'org.spockframework:spock-core:2.4-M1-groovy-4.0'
-    testImplementation 'net.bytebuddy:byte-buddy:1.14.13'
-    testImplementation 'org.objenesis:objenesis:3.3'
+    testImplementation 'net.bytebuddy:byte-buddy:1.15.9'
+    testImplementation 'org.objenesis:objenesis:3.4'
 }
 
 test {

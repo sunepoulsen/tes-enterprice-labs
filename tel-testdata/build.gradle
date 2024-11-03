@@ -16,19 +16,19 @@ subprojects {
 
     dependencies {
         // Lombok
-        compileOnly 'org.projectlombok:lombok:1.18.32'
-        annotationProcessor 'org.projectlombok:lombok:1.18.32'
+        compileOnly 'org.projectlombok:lombok:1.18.34'
+        annotationProcessor 'org.projectlombok:lombok:1.18.34'
 
         // Logging
-        implementation 'ch.qos.logback:logback-core:1.5.5'
-        implementation 'ch.qos.logback:logback-classic:1.5.5'
-        implementation 'org.slf4j:log4j-over-slf4j:2.0.13'
+        implementation 'ch.qos.logback:logback-core:1.5.12'
+        implementation 'ch.qos.logback:logback-classic:1.5.12'
+        implementation 'org.slf4j:log4j-over-slf4j:2.0.16'
 
         // Spock
-        testImplementation 'org.apache.groovy:groovy-all:4.0.21'
+        testImplementation 'org.apache.groovy:groovy-all:4.0.23'
         testImplementation 'org.spockframework:spock-core:2.4-M1-groovy-4.0'
-        testImplementation 'net.bytebuddy:byte-buddy:1.14.13'
-        testImplementation 'org.objenesis:objenesis:3.3'
+        testImplementation 'net.bytebuddy:byte-buddy:1.15.9'
+        testImplementation 'org.objenesis:objenesis:3.4'
     }
 
     apply from: "${rootProject.projectDir}/gradle/resources.gradle"

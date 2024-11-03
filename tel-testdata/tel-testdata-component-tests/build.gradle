@@ -13,11 +13,11 @@ dependencies {
     testImplementation 'dk.sunepoulsen.tes-foundation:tes-security:2.0.0-SNAPSHOT'
     testImplementation 'dk.sunepoulsen.tes-foundation:tes-selenium:2.0.0-SNAPSHOT'
 
-    testImplementation platform('org.testcontainers:testcontainers-bom:1.19.7')
+    testImplementation platform('org.testcontainers:testcontainers-bom:1.20.3')
     testImplementation 'org.testcontainers:testcontainers'
     testImplementation 'org.testcontainers:postgresql'
 
-    testImplementation 'org.slf4j:jul-to-slf4j:2.0.13'
+    testImplementation 'org.slf4j:jul-to-slf4j:2.0.16'
 }
 
 test {
