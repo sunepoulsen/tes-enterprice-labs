@@ -1,7 +1,10 @@
 <template>
   <p-card>
+    <template #title>Simple Card</template>
     <template #content>
-      Welcome to {{ $t("app.title") }}
+      <p class="m-0">
+        Welcome to {{ $t("app.title") }}
+      </p>
     </template>
   </p-card>
 </template>

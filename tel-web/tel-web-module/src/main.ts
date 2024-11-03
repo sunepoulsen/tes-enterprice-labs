@@ -13,8 +13,7 @@ import Card from 'primevue/card'
 import Toolbar from "primevue/toolbar";
 
 // PrimeVue Theme
-import '/node_modules/primeflex/primeflex.css'
-import 'primevue/resources/themes/lara-light-indigo/theme.css'
+import Lara from '@primevue/themes/lara';
 
 // Create i18n instance with supported languages
 import enUS from "@/app/locales/en-US.json";
@@ -36,7 +35,12 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(i18n);
 app.use(router)
-app.use(PrimeVue)
+app.use(PrimeVue, {
+  // Default theme configuration
+  theme: {
+    preset: Lara
+  }
+})
 
 // Add PrimeVue components
 app.component('p-card', Card);
